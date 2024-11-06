@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "163196966457",
+    "firebase_url": "https://citi-guide-31d31-default-rtdb.firebaseio.com",
+    "project_id": "citi-guide-31d31",
+    "storage_bucket": "citi-guide-31d31.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:163196966457:android:f1d1f9292b95c064a4dfe8",
+        "android_client_info": {
+          "package_name": "com.citi_guide.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB31IKkLjNJ3DiDcYXrtaHdjmB2OztgYy8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
