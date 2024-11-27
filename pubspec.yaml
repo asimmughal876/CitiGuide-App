@@ -37,6 +37,12 @@ dependencies:
   cupertino_icons: ^1.0.8
   firebase_core: ^3.6.0
   firebase_database: ^11.1.4
+  image_picker: ^1.1.2
+  cloudinary_public: ^0.23.1
+  google_maps_flutter: ^2.10.0
+  flutter_map_location_marker: ^9.1.1
+  location: ^7.0.1
+  url_launcher: ^6.3.1
 
 dev_dependencies:
   flutter_test:
