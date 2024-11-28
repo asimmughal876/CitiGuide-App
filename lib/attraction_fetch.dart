@@ -76,51 +76,51 @@ class _AttractionState extends State<AttractionFetch> {
     }
   }
 
-void _showMapPopup(String? latitude, String? longitude) {
-  if (latitude == null || longitude == null) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Invalid location data')),
-    );
-    return;
-  }
+  void _showMapPopup(String? latitude, String? longitude) {
+    if (latitude == null || longitude == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Invalid location data')),
+      );
+      return;
+    }
 
-  try {
-    final double lat = double.parse(latitude);
-    final double lng = double.parse(longitude);
+    try {
+      final double lat = double.parse(latitude);
+      final double lng = double.parse(longitude);
 
-    showDialog(
-      context: context,
-      builder: (context) {
-        return Dialog(
-          insetPadding: EdgeInsets.zero, // Remove padding around the dialog
-          child: GoogleMap(
-            initialCameraPosition: CameraPosition(
-              target: LatLng(lat, lng),
-              zoom: 18,
-            ),
-            markers: {
-              Marker(
-                markerId: const MarkerId('selectedLocation'),
-                position: LatLng(lat, lng),
+      showDialog(
+        context: context,
+        builder: (context) {
+          return Dialog(
+            insetPadding: EdgeInsets.zero,
+            child: GoogleMap(
+              initialCameraPosition: CameraPosition(
+                target: LatLng(lat, lng),
+                zoom: 18,
               ),
-            },
-            mapType: MapType.normal, // Ensure the map type shows POIs
-            buildingsEnabled: true, // Enable 3D buildings (optional)
-            indoorViewEnabled: true, // Enable indoor maps (optional)
-            onMapCreated: (GoogleMapController controller) {
-              controller.setMapStyle(null); // Default map style with POIs
-            },
-          ),
-        );
-      },
-    );
-  } catch (e) {
-    print('Error parsing location: $e');
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Error displaying location: $e')),
-    );
+              markers: {
+                Marker(
+                  markerId: const MarkerId('selectedLocation'),
+                  position: LatLng(lat, lng),
+                ),
+              },
+              mapType: MapType.normal,
+              buildingsEnabled: true,
+              indoorViewEnabled: true,
+              onMapCreated: (GoogleMapController controller) {
+                controller.setMapStyle(null);
+              },
+            ),
+          );
+        },
+      );
+    } catch (e) {
+      print('Error parsing location: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error displaying location: $e')),
+      );
+    }
   }
-} 
 
   @override
   void initState() {
@@ -155,14 +155,20 @@ void _showMapPopup(String? latitude, String? longitude) {
                       });
                     },
                     decoration: InputDecoration(
-                      hintText: 'Search attractions...',
-                      prefixIcon: const Icon(Icons.search),
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12.0),
-                          borderSide: const BorderSide(
-                            color: Colors.black,
-                          )),
-                    ),
+                      
+                        hintText: 'Search attractions...',
+                        prefixIcon: const Icon(Icons.search),
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12.0),
+                            borderSide: const BorderSide(
+                              color: Colors.black,
+                            )),
+                        focusedBorder:  OutlineInputBorder(
+                           borderRadius: BorderRadius.circular(12.0),
+                            borderSide: const BorderSide(
+                          color: Colors.black,
+                        ))),
+                          cursorColor:const Color.fromARGB(255, 0, 149, 255),
                   ),
                 ),
                 const SizedBox(width: 16),
@@ -170,12 +176,12 @@ void _showMapPopup(String? latitude, String? longitude) {
                   child: Container(
                     padding: const EdgeInsets.symmetric(horizontal: 12.0),
                     decoration: BoxDecoration(
-                      color: const Color.fromRGBO(244, 65, 83, 1),
+                      color: const Color.fromARGB(255, 0, 149, 255),
                       borderRadius: BorderRadius.circular(12),
                       border: Border.all(color: Colors.blue.shade200),
                     ),
                     child: DropdownButton<String>(
-                      dropdownColor: const Color.fromRGBO(244, 65, 83, 1),
+                      dropdownColor: const Color.fromARGB(255, 0, 149, 255),
                       value: _selectedCategoryKey,
                       hint: const Text(
                         'Category',
@@ -274,13 +280,19 @@ void _showMapPopup(String? latitude, String? longitude) {
                                                     item['longitude']);
                                               },
                                               style: ElevatedButton.styleFrom(
+                                                backgroundColor:
+                                                    const Color.fromARGB(
+                                                        255, 0, 149, 255),
                                                 shape: RoundedRectangleBorder(
                                                   borderRadius:
                                                       BorderRadius.circular(8),
                                                 ),
                                               ),
-                                              child:
-                                                  const Text("View Location"),
+                                              child: const Text(
+                                                "View Location",
+                                                style: TextStyle(
+                                                    color: Colors.white),
+                                              ),
                                             ),
                                           ),
                                           const SizedBox(
@@ -299,12 +311,19 @@ void _showMapPopup(String? latitude, String? longitude) {
                                                                         'id'])));
                                               },
                                               style: ElevatedButton.styleFrom(
+                                                backgroundColor:
+                                                    const Color.fromARGB(
+                                                        255, 0, 149, 255),
                                                 shape: RoundedRectangleBorder(
                                                   borderRadius:
                                                       BorderRadius.circular(8),
                                                 ),
                                               ),
-                                              child: const Text("Review"),
+                                              child: const Text(
+                                                "Review",
+                                                style: TextStyle(
+                                                    color: Colors.white),
+                                              ),
                                             ),
                                           ),
                                         ],
