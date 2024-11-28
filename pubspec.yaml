@@ -40,10 +40,13 @@ dependencies:
   firebase_auth: ^5.3.1
   shared_preferences: ^2.3.2
   firebase_storage: ^12.3.5
-  image_picker: ^1.1.2
   path: ^1.9.0
-  cloudinary_public: ^0.23.1
   google_sign_in: ^6.2.2
+  image_picker: ^1.1.2
+  cloudinary_public: ^0.23.1
+  google_maps_flutter: ^2.10.0
+  flutter_map_location_marker: ^9.1.1
+  location: ^7.0.1
 
 dev_dependencies:
   flutter_test:
