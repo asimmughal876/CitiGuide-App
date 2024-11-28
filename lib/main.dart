@@ -30,7 +30,7 @@ class MyApp extends StatelessWidget {
         //   backgroundColor: const Color.fromARGB(255, 244, 65, 83), // AppBar background color
         // ),
 
-        body: const Login(),
+        body: const SignUp(),
       ),
     );
   }

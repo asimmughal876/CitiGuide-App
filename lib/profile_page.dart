@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:citi_guide_app/login.dart'; // Make sure to import the login screen
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({Key? key}) : super(key: key);
@@ -14,7 +15,6 @@ class _ProfilePageState extends State<ProfilePage> {
   late TextEditingController nameController;
   late TextEditingController emailController;
   late TextEditingController phoneController;
-  late TextEditingController passwordController;
 
   String? profileImageURL;
 
@@ -24,7 +24,6 @@ class _ProfilePageState extends State<ProfilePage> {
     nameController = TextEditingController();
     emailController = TextEditingController();
     phoneController = TextEditingController();
-    passwordController = TextEditingController();
     _loadProfileData();
   }
 
@@ -73,6 +72,17 @@ class _ProfilePageState extends State<ProfilePage> {
     }
   }
 
+  // Logout Function
+  Future<void> _logout() async {
+    await FirebaseAuth.instance.signOut();
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.clear(); // Clear any shared preferences data
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => const Login()), // Navigate to login screen
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -108,8 +118,6 @@ class _ProfilePageState extends State<ProfilePage> {
               _buildTextField(emailController, 'Email', Icons.email),
               const SizedBox(height: 15),
               _buildTextField(phoneController, 'Phone Number', Icons.phone),
-              const SizedBox(height: 15),
-              _buildTextField(passwordController, 'Password', Icons.lock, isPassword: true),
               const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () async {
@@ -121,6 +129,18 @@ class _ProfilePageState extends State<ProfilePage> {
                   foregroundColor: Colors.white,
                 ),
               ),
+              const SizedBox(height: 20),
+              // Logout Button
+              ElevatedButton(
+                onPressed: () async {
+                  await _logout();
+                },
+                child: const Text("Logout"),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.red, // Red for logout
+                  foregroundColor: Colors.white,
+                ),
+              ),
             ],
           ),
         ),
@@ -128,10 +148,9 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  Widget _buildTextField(TextEditingController controller, String hint, IconData icon, {bool isPassword = false}) {
+  Widget _buildTextField(TextEditingController controller, String hint, IconData icon) {
     return TextFormField(
       controller: controller,
-      obscureText: isPassword,
       decoration: InputDecoration(
         prefixIcon: Icon(icon, color: Colors.blue),
         hintText: hint,
