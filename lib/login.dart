@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:citi_guide_app/profile_page.dart';
-import 'package:citi_guide_app/admin_dashboard.dart';  // Make sure to import AdminDashboard page
+import 'package:citi_guide_app/admin_dashboard.dart';  
 
 class Login extends StatefulWidget {
   const Login({Key? key}) : super(key: key);
@@ -17,14 +17,15 @@ class _LoginState extends State<Login> {
 
   Future<void> login(BuildContext context) async {
     try {
-      // Try to sign in with email and password
+      // sign in with email and password
       UserCredential user = await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: emailController.text,
         password: passwordController.text,
       );
-
+      SharedPreferences storage = await SharedPreferences.getInstance();
+      await storage.setString("user", user.user!.uid);
       // Check if the logged-in user is the admin
-      if (user.user!.email == 'Admin@gmail.com') {
+      if (user.user!.email == 'admin@gmail.com') {
         // If admin, navigate to Admin Dashboard
         Navigator.pushReplacement(
           context,
@@ -39,8 +40,7 @@ class _LoginState extends State<Login> {
       }
 
       // Save the user ID in SharedPreferences
-      SharedPreferences storage = await SharedPreferences.getInstance();
-      await storage.setString("user", user.user!.uid);
+
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("Error: $e")),
