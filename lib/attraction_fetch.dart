@@ -248,11 +248,10 @@ class _AttractionState extends State<AttractionFetch> {
             color: const Color.fromARGB(255, 0, 149, 255),
             borderRadius: BorderRadius.circular(12),
           ),
-          padding: const EdgeInsets.symmetric(horizontal: 16.0), // Padding for inner spacing
-          child: Center(
+          width: double.infinity,
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
             child: DropdownButtonHideUnderline(
         child: DropdownButton<String>(
-          alignment: Alignment.center, // Aligns dropdown in the center
           value: _sortOption,
           items: const [
             DropdownMenuItem(
@@ -260,6 +259,7 @@ class _AttractionState extends State<AttractionFetch> {
               child: Text(
                 'Highest Rated',
                 style: TextStyle(color: Colors.white),
+
               ),
             ),
             DropdownMenuItem(
@@ -287,7 +287,6 @@ class _AttractionState extends State<AttractionFetch> {
         ),
             ),
           ),
-        ),
       ),
     _isLoading
               ? const Center(
