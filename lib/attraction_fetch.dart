@@ -18,11 +18,14 @@ class _AttractionState extends State<AttractionFetch> {
       FirebaseDatabase.instance.ref().child('attraction_category');
   final DatabaseReference attractionRef =
       FirebaseDatabase.instance.ref().child('attraction');
+  final DatabaseReference attractionReviewRef =
+      FirebaseDatabase.instance.ref().child('review_attraction');
   Map<String, String> _categories = {};
   String? _selectedCategoryKey;
   String _searchQuery = '';
   List<Map<String, dynamic>> _attractions = [];
   bool _isLoading = false;
+  String _sortOption = 'Highest Rated';
 
   Future<void> _fetchCategories() async {
     try {
@@ -44,9 +47,24 @@ class _AttractionState extends State<AttractionFetch> {
       _isLoading = true;
     });
     try {
-      final snapshot = await attractionRef.get();
-      if (snapshot.exists) {
-        final Map<dynamic, dynamic> attractionsMap = snapshot.value as Map;
+      final attractionsSnapshot = await attractionRef.get();
+      final reviewsSnapshot = await attractionReviewRef.get();
+
+      if (attractionsSnapshot.exists) {
+        final Map<dynamic, dynamic> attractionsMap =
+            attractionsSnapshot.value as Map;
+
+        Map<String, List<int>> attractionRatings = {};
+
+        if (reviewsSnapshot.exists) {
+          final Map<dynamic, dynamic> reviewsMap = reviewsSnapshot.value as Map;
+          for (var review in reviewsMap.values) {
+            final attractionId = review['attraction'] as String;
+            final rating = (review['rating'] as num).toInt();
+            attractionRatings.putIfAbsent(attractionId, () => []).add(rating);
+          }
+        }
+
         setState(() {
           _attractions = attractionsMap.entries.where((entry) {
             if (widget.cityId != null) {
@@ -55,6 +73,11 @@ class _AttractionState extends State<AttractionFetch> {
               return true;
             }
           }).map((entry) {
+            final ratings = attractionRatings[entry.key] ?? [];
+            final averageRating = ratings.isNotEmpty
+                ? ratings.reduce((a, b) => a + b) / ratings.length
+                : 0.0;
+
             return {
               'id': entry.key,
               'title': entry.value['title'],
@@ -63,6 +86,7 @@ class _AttractionState extends State<AttractionFetch> {
               'category_key': entry.value['category_key'],
               'latitude': entry.value['latitude'],
               'longitude': entry.value['longitude'],
+              'average_rating': averageRating,
             };
           }).toList();
         });
@@ -140,6 +164,14 @@ class _AttractionState extends State<AttractionFetch> {
       return matchesCategory && matchesSearchQuery;
     }).toList();
 
+    if (_sortOption == 'Highest Rated') {
+      filteredAttractions.sort((a, b) => (b['average_rating'] as double)
+          .compareTo(a['average_rating'] as double));
+    } else if (_sortOption == 'Lowest Rated') {
+      filteredAttractions.sort((a, b) => (a['average_rating'] as double)
+          .compareTo(b['average_rating'] as double));
+    }
+
     return Scaffold(
       body: Column(
         children: [
@@ -155,20 +187,18 @@ class _AttractionState extends State<AttractionFetch> {
                       });
                     },
                     decoration: InputDecoration(
-                      
-                        hintText: 'Search attractions...',
-                        prefixIcon: const Icon(Icons.search),
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12.0),
-                            borderSide: const BorderSide(
-                              color: Colors.black,
-                            )),
-                        focusedBorder:  OutlineInputBorder(
-                           borderRadius: BorderRadius.circular(12.0),
-                            borderSide: const BorderSide(
-                          color: Colors.black,
-                        ))),
-                          cursorColor:const Color.fromARGB(255, 0, 149, 255),
+                      hintText: 'Search attractions...',
+                      prefixIcon: const Icon(Icons.search),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12.0),
+                        borderSide: const BorderSide(color: Colors.black),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12.0),
+                        borderSide: const BorderSide(color: Colors.black),
+                      ),
+                    ),
+                    cursorColor: const Color.fromARGB(255, 0, 149, 255),
                   ),
                 ),
                 const SizedBox(width: 16),
@@ -211,8 +241,59 @@ class _AttractionState extends State<AttractionFetch> {
               ],
             ),
           ),
-          _isLoading
-              ? const Center(child: CircularProgressIndicator(color:  Color.fromARGB(255, 0, 149, 255),))
+      Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Container(
+          decoration: BoxDecoration(
+            color: const Color.fromARGB(255, 0, 149, 255),
+            borderRadius: BorderRadius.circular(12),
+          ),
+          padding: const EdgeInsets.symmetric(horizontal: 16.0), // Padding for inner spacing
+          child: Center(
+            child: DropdownButtonHideUnderline(
+        child: DropdownButton<String>(
+          alignment: Alignment.center, // Aligns dropdown in the center
+          value: _sortOption,
+          items: const [
+            DropdownMenuItem(
+              value: 'Highest Rated',
+              child: Text(
+                'Highest Rated',
+                style: TextStyle(color: Colors.white),
+              ),
+            ),
+            DropdownMenuItem(
+              value: 'Lowest Rated',
+              child: Text(
+                'Lowest Rated',
+                style: TextStyle(color: Colors.white),
+              ),
+            ),
+          ],
+          onChanged: (value) {
+            setState(() {
+              _sortOption = value!;
+            });
+          },
+          dropdownColor: const Color.fromARGB(255, 0, 149, 255), // Dropdown menu background color
+          icon: const Icon(
+            Icons.arrow_drop_down,
+            color: Colors.white, // Icon color
+          ),
+          style: const TextStyle(
+            color: Colors.white, // Dropdown text color
+            fontSize: 16,
+          ),
+        ),
+            ),
+          ),
+        ),
+      ),
+    _isLoading
+              ? const Center(
+                  child: CircularProgressIndicator(
+                  color: Color.fromARGB(255, 0, 149, 255),
+                ))
               : filteredAttractions.isEmpty
                   ? const Center(
                       child: Text(
@@ -223,119 +304,136 @@ class _AttractionState extends State<AttractionFetch> {
                     )
                   : Expanded(
                       child: ListView.builder(
-                        itemCount: filteredAttractions.length,
-                        itemBuilder: (context, index) {
-                          final item = filteredAttractions[index];
-                          return Card(
-                            elevation: 12,
-                            margin: const EdgeInsets.symmetric(
-                                vertical: 8.0, horizontal: 16.0),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                ClipRRect(
-                                  borderRadius: const BorderRadius.only(
-                                    topLeft: Radius.circular(12),
-                                    topRight: Radius.circular(12),
+                          itemCount: filteredAttractions.length,
+                          itemBuilder: (context, index) {
+                            final item = filteredAttractions[index];
+                            return Card(
+                              elevation: 12,
+                              margin: const EdgeInsets.symmetric(
+                                  vertical: 8.0, horizontal: 16.0),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  ClipRRect(
+                                    borderRadius: const BorderRadius.only(
+                                      topLeft: Radius.circular(12),
+                                      topRight: Radius.circular(12),
+                                    ),
+                                    child: Image.network(
+                                      item['image']!,
+                                      height: 200,
+                                      width: double.infinity,
+                                      fit: BoxFit.cover,
+                                    ),
                                   ),
-                                  child: Image.network(
-                                    item['image']!,
-                                    height: 200,
-                                    width: double.infinity,
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.all(16.0),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        item['title']!,
-                                        style: const TextStyle(
-                                          fontSize: 20,
-                                          fontWeight: FontWeight.bold,
+                                  Padding(
+                                    padding: const EdgeInsets.all(16.0),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          item['title']!,
+                                          style: const TextStyle(
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.bold,
+                                          ),
                                         ),
-                                      ),
-                                      const SizedBox(height: 8),
-                                      Text(
-                                        item['description']!,
-                                        style: const TextStyle(
-                                          fontSize: 16,
-                                          color:
-                                              Color.fromARGB(255, 70, 70, 70),
+                                        const SizedBox(height: 8),
+                                        Text(
+                                          item['description']!,
+                                          style: const TextStyle(
+                                            fontSize: 16,
+                                            color:
+                                                Color.fromARGB(255, 70, 70, 70),
+                                          ),
                                         ),
-                                      ),
-                                      const SizedBox(height: 12),
-                                      Row(
-                                        children: [
-                                          Expanded(
-                                            child: ElevatedButton(
-                                              onPressed: () {
-                                                _showMapPopup(item['latitude'],
-                                                    item['longitude']);
-                                              },
-                                              style: ElevatedButton.styleFrom(
-                                                backgroundColor:
-                                                    const Color.fromARGB(
-                                                        255, 0, 149, 255),
-                                                shape: RoundedRectangleBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(8),
-                                                ),
-                                              ),
-                                              child: const Text(
-                                                "View Location",
-                                                style: TextStyle(
-                                                    color: Colors.white),
+                                        const SizedBox(height: 8),
+                                        Row(
+                                          children: [
+                                            const Icon(Icons.star,
+                                                color: Colors.amber, size: 20),
+                                            const SizedBox(width: 4),
+                                            Text(
+                                              item['average_rating']!
+                                                  .toStringAsFixed(1),
+                                              style: const TextStyle(
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.bold,
                                               ),
                                             ),
-                                          ),
-                                          const SizedBox(
-                                            width: 20,
-                                          ),
-                                          Expanded(
-                                            child: ElevatedButton(
-                                              onPressed: () {
-                                                Navigator.push(
+                                          ],
+                                        ),
+                                        const SizedBox(height: 12),
+                                        Row(
+                                          children: [
+                                            Expanded(
+                                              child: ElevatedButton(
+                                                onPressed: () {
+                                                  _showMapPopup(
+                                                      item['latitude'],
+                                                      item['longitude']);
+                                                },
+                                                style: ElevatedButton.styleFrom(
+                                                  backgroundColor:
+                                                      const Color.fromARGB(
+                                                          255, 0, 149, 255),
+                                                  shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            8),
+                                                  ),
+                                                ),
+                                                child: const Text(
+                                                  "View Location",
+                                                  style: TextStyle(
+                                                      color: Colors.white),
+                                                ),
+                                              ),
+                                            ),
+                                            const SizedBox(width: 20),
+                                            Expanded(
+                                              child: ElevatedButton(
+                                                onPressed: () {
+                                                  Navigator.push(
                                                     context,
                                                     MaterialPageRoute(
-                                                        builder: (context) =>
-                                                            ReviewAttraction(
-                                                                attractionId:
-                                                                    item[
-                                                                        'id'])));
-                                              },
-                                              style: ElevatedButton.styleFrom(
-                                                backgroundColor:
-                                                    const Color.fromARGB(
-                                                        255, 0, 149, 255),
-                                                shape: RoundedRectangleBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(8),
+                                                      builder: (context) =>
+                                                          ReviewAttraction(
+                                                              attractionId:
+                                                                  item['id']),
+                                                    ),
+                                                  );
+                                                },
+                                                style: ElevatedButton.styleFrom(
+                                                  backgroundColor:
+                                                      const Color.fromARGB(
+                                                          255, 0, 149, 255),
+                                                  shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            8),
+                                                  ),
+                                                ),
+                                                child: const Text(
+                                                  "Review",
+                                                  style: TextStyle(
+                                                      color: Colors.white),
                                                 ),
                                               ),
-                                              child: const Text(
-                                                "Review",
-                                                style: TextStyle(
-                                                    color: Colors.white),
-                                              ),
                                             ),
-                                          ),
-                                        ],
-                                      ),
-                                    ],
+                                          ],
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                ),
-                              ],
-                            ),
-                          );
-                        },
-                      ),
+                                ],
+                              ),
+                            );
+                          }),
                     ),
         ],
       ),
