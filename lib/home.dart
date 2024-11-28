@@ -102,6 +102,7 @@ class _HomePageState extends State<HomePage> {
                               hintText: "Search City",
                               border: InputBorder.none,
                             ),
+                            cursorColor:const Color.fromARGB(255, 0, 149, 255),
                             onChanged: (value) {
                               setState(() {
                                 _searchQuery = value.toLowerCase();
@@ -115,17 +116,17 @@ class _HomePageState extends State<HomePage> {
                 ],
               ),
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 10),
             const Center(
                 child: Text("Cities",
                     style:
                         TextStyle(fontWeight: FontWeight.bold, fontSize: 24))),
             isLoading
-                ? const Center(child: CircularProgressIndicator())
+                ? const Center(child: CircularProgressIndicator(color:  Color.fromARGB(255, 0, 149, 255),))
                 : cities.isEmpty
                     ? const Center(child: Text("No cities available"))
-                    : const SizedBox(height: 20),
-            const SizedBox(height: 20),
+                    :
+            const SizedBox(height: 10),
             ListView.builder(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
@@ -183,7 +184,10 @@ class _HomePageState extends State<HomePage> {
                                     ),
                                   );
                                 },
-                                child: const Text("Show Attractions"),
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: const Color.fromARGB(255, 0, 149, 255),
+                                ),
+                                child: const Text("Show Attractions", style: TextStyle(color: Colors.white),),
                               ),
                             ],
                           ),
