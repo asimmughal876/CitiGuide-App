@@ -212,7 +212,7 @@ class _AttractionState extends State<AttractionFetch> {
             ),
           ),
           _isLoading
-              ? const Center(child: CircularProgressIndicator())
+              ? const Center(child: CircularProgressIndicator(color:  Color.fromARGB(255, 0, 149, 255),))
               : filteredAttractions.isEmpty
                   ? const Center(
                       child: Text(
