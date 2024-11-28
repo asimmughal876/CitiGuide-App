@@ -60,7 +60,7 @@ class _AttractionState extends State<AttractionFetch> {
               'title': entry.value['title'],
               'description': entry.value['description'],
               'image': entry.value['image'],
-              'a_category': entry.value['a_category'],
+              'category_key': entry.value['category_key'],
               'latitude': entry.value['latitude'],
               'longitude': entry.value['longitude'],
             };
@@ -133,7 +133,7 @@ void _showMapPopup(String? latitude, String? longitude) {
   Widget build(BuildContext context) {
     final filteredAttractions = _attractions.where((item) {
       final matchesCategory = _selectedCategoryKey == null ||
-          item['a_category'] == _selectedCategoryKey;
+          item['category_key'] == _selectedCategoryKey;
       final matchesSearchQuery =
           item['title']!.toLowerCase().contains(_searchQuery) ||
               item['description']!.toLowerCase().contains(_searchQuery);
