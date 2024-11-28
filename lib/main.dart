@@ -1,4 +1,4 @@
-import 'package:citi_guide_app/admin.dart';
+import 'package:citi_guide_app/home.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
@@ -23,14 +23,11 @@ class MyApp extends StatelessWidget {
             "Citi Guide",
             style: TextStyle(color: Colors.white),
           ),
-          backgroundColor: const Color.fromARGB(
-              255, 185, 233, 255), // AppBar background color
+          backgroundColor: const Color.fromARGB(255, 0, 149, 255), // AppBar background color
         ),
 
-        //body: const HomePage(),
-        //body: const Aboutus(),
-        body: const AdminDashboard(),
-      ),
+        body: const HomePage(),
+        ),
     );
   }
 }

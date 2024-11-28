@@ -102,6 +102,7 @@ class _HomePageState extends State<HomePage> {
                               hintText: "Search City",
                               border: InputBorder.none,
                             ),
+                            cursorColor:const Color.fromARGB(255, 0, 149, 255),
                             onChanged: (value) {
                               setState(() {
                                 _searchQuery = value.toLowerCase();
@@ -183,7 +184,10 @@ class _HomePageState extends State<HomePage> {
                                     ),
                                   );
                                 },
-                                child: const Text("Show Attractions"),
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: const Color.fromARGB(255, 0, 149, 255),
+                                ),
+                                child: const Text("Show Attractions", style: TextStyle(color: Colors.white),),
                               ),
                             ],
                           ),

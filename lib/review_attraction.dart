@@ -27,8 +27,8 @@ class _ReviewAttractionState extends State<ReviewAttraction> {
         final Map<dynamic, dynamic> reviewMap = snapshot.value as Map;
         setState(() {
           reviews = reviewMap.entries
-              .where((entry) =>
-                  entry.value['attraction'] == widget.attractionId)
+              .where(
+                  (entry) => entry.value['attraction'] == widget.attractionId)
               .map((entry) => {
                     'user': entry.value['user'],
                     'rating': entry.value['rating'],
@@ -43,7 +43,6 @@ class _ReviewAttractionState extends State<ReviewAttraction> {
     }
   }
 
-  // Submit review to Firebase
   Future<void> _submitReview() async {
     if (_formKey.currentState!.validate()) {
       final name = _nameController.text;
@@ -130,7 +129,15 @@ class _ReviewAttractionState extends State<ReviewAttraction> {
                           controller: _nameController,
                           decoration: const InputDecoration(
                             labelText: 'Name',
-                            border: OutlineInputBorder(),
+                            floatingLabelStyle: TextStyle(color: Colors.black),
+                            border: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.grey),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                  color: Color.fromARGB(255, 30, 30,
+                                      30)), 
+                            ),
                           ),
                           validator: (value) =>
                               value!.isEmpty ? 'Please enter your name' : null,
@@ -140,11 +147,20 @@ class _ReviewAttractionState extends State<ReviewAttraction> {
                           controller: _reviewController,
                           decoration: const InputDecoration(
                             labelText: 'Review',
-                            border: OutlineInputBorder(),
+                           floatingLabelStyle: TextStyle(color: Colors.black),
+                            border: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.grey),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                  color: Color.fromARGB(255, 30, 30,
+                                      30)),
+                            ),
                           ),
                           maxLines: 3,
-                          validator: (value) =>
-                              value!.isEmpty ? 'Please enter your review' : null,
+                          validator: (value) => value!.isEmpty
+                              ? 'Please enter your review'
+                              : null,
                         ),
                         const SizedBox(height: 16),
                         Row(
@@ -160,7 +176,10 @@ class _ReviewAttractionState extends State<ReviewAttraction> {
                         const SizedBox(height: 16),
                         ElevatedButton(
                           onPressed: _submitReview,
-                          child: const Text('Submit Review'),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color.fromARGB(255, 0, 149, 255)
+                          ),
+                          child: const Text('Submit Review',style: TextStyle(color: Colors.white),),
                         ),
                       ],
                     ),
