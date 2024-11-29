@@ -18,6 +18,8 @@ class _AttractionFormState extends State<AttractionForm> {
   final TextEditingController Attractiondesc = TextEditingController();
   final TextEditingController Attractionlatitude = TextEditingController();
   final TextEditingController Attractionlongitude = TextEditingController();
+  final TextEditingController AttractionOpenTime = TextEditingController();
+  final TextEditingController AttractionCloseTime = TextEditingController();
   final DatabaseReference attractionRef =
       FirebaseDatabase.instance.ref().child('attraction');
   final DatabaseReference citiesRef =
@@ -47,6 +49,34 @@ class _AttractionFormState extends State<AttractionForm> {
     _fetchCategories();
     _fetchCities();
   }
+Future<void> _pickTime(TextEditingController controller) async {
+  final TimeOfDay? pickedTime = await showTimePicker(
+    context: context,
+    initialTime: TimeOfDay.now(),
+    builder: (context, child) {
+      return Theme(
+        data: ThemeData.light().copyWith(
+          colorScheme:const ColorScheme.light(
+            primary:  Color.fromARGB(255, 0, 149, 255),
+            onPrimary: Colors.white,
+            onSurface: Colors.black, 
+          ),
+          buttonTheme: const ButtonThemeData(
+            textTheme: ButtonTextTheme.primary,
+          ),
+        ),
+        child: child!,
+      );
+    },
+  );
+
+  if (pickedTime != null) {
+    setState(() {
+      controller.text = pickedTime.format(context);
+    });
+  }
+}
+
 
   Future<void> _fetchCategories() async {
     try {
@@ -158,6 +188,8 @@ class _AttractionFormState extends State<AttractionForm> {
 
       await attractionRef.push().set({
         'title': AttractionController.text,
+        'open_time': AttractionOpenTime.text,
+        'close_time': AttractionCloseTime.text,
         'image': _imageUrl,
         'description': Attractiondesc.text,
         'latitude': Attractionlatitude.text,
@@ -230,7 +262,7 @@ class _AttractionFormState extends State<AttractionForm> {
                       icon: const Icon(Icons.photo_library),
                       label: const Text("Choose Image"),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color.fromRGBO(244, 65, 83, 1),
+                        backgroundColor: const Color.fromARGB(255, 0, 149, 255),
                         foregroundColor: Colors.white,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
@@ -269,6 +301,22 @@ class _AttractionFormState extends State<AttractionForm> {
                 maxLines: 7,
                 decoration: _buildInputDecoration(
                     "Attraction Description", "Enter Attraction Description"),
+              ),
+              const SizedBox(height: 16),
+              TextField(
+                controller: AttractionOpenTime,
+                readOnly: true,
+                onTap: () => _pickTime(AttractionOpenTime),
+                decoration: _buildInputDecoration(
+                    "Attraction Open Time", "Select Attraction Open Time"),
+              ),
+              const SizedBox(height: 16),
+              TextField(
+                controller: AttractionCloseTime,
+                readOnly: true,
+                onTap: () => _pickTime(AttractionCloseTime),
+                decoration: _buildInputDecoration(
+                    "Attraction Close Time", "Select Attraction Close Time"),
               ),
               const SizedBox(height: 16),
               TextField(
@@ -319,7 +367,7 @@ class _AttractionFormState extends State<AttractionForm> {
               ElevatedButton(
                 onPressed: _isUploading ? null : addAttraction,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color.fromRGBO(244, 65, 83, 1),
+                  backgroundColor: const  Color.fromARGB(255, 0, 149, 255),
                   shape: const RoundedRectangleBorder(
                     borderRadius: BorderRadius.all(Radius.circular(30)),
                   ),

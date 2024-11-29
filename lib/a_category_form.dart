@@ -5,24 +5,24 @@ class ACategoryForm extends StatefulWidget {
   const ACategoryForm({super.key});
 
   @override
-  State<ACategoryForm> createState() => _CitiesFormState();
+  State<ACategoryForm> createState() => _ACategoryFormState();
 }
 
-class _CitiesFormState extends State<ACategoryForm> {
-  final attraction_name = TextEditingController();
+class _ACategoryFormState extends State<ACategoryForm> {
+  final c_name = TextEditingController();
   final DatabaseReference _databaseReference =
       FirebaseDatabase.instance.ref().child('attraction_category');
   Future<void> add(BuildContext context) async {
-    if(attraction_name.text.isEmpty){
+    if(c_name.text.isEmpty){
       ScaffoldMessenger.of(context).showSnackBar(
       const  SnackBar(content: Text("Please fill the Text Field"))
       );
     }
     try{
       await _databaseReference.push().set({
-        'a_category' : attraction_name.text
+        'a_category' : c_name.text
       });
-      attraction_name.clear();
+      c_name.clear();
         ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("Atrraction Category Added Successfully"))
       );
@@ -42,17 +42,17 @@ class _CitiesFormState extends State<ACategoryForm> {
           child: Column(
             children: [
               const Text(
-                "Atrration Category Form",
+                "Attration Category Form",
                 style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 30),
               TextField(
-                controller: attraction_name,
+                controller: c_name,
                 cursorColor:
-                    const Color.fromRGBO(244, 65, 83, 1), 
+                    const Color.fromARGB(255, 0, 149, 255), 
                 decoration: InputDecoration(
-                    labelText: "Atrration Category",
-                    hintText: "Enter atrration category",
+                    labelText: "Attration Category",
+                    hintText: "Enter attration category",
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(15),
                     ),
@@ -73,7 +73,7 @@ class _CitiesFormState extends State<ACategoryForm> {
                   add(context);
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color.fromRGBO(244, 65, 83, 1),
+                  backgroundColor: const  Color.fromARGB(255, 0, 149, 255),
                   shape: const RoundedRectangleBorder(
                     borderRadius: BorderRadius.all(Radius.circular(30)),
                   ),
