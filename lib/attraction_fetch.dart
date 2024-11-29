@@ -3,6 +3,7 @@ import 'package:citi_guide_app/review_attraction.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class AttractionFetch extends StatefulWidget {
   final String? cityId;
@@ -86,7 +87,10 @@ class _AttractionState extends State<AttractionFetch> {
               'category_key': entry.value['category_key'],
               'latitude': entry.value['latitude'],
               'longitude': entry.value['longitude'],
+              'open_time': entry.value['open_time'],
+              'close_time': entry.value['close_time'],
               'average_rating': averageRating,
+              'link': entry.value['website_Link'],
             };
           }).toList();
         });
@@ -241,54 +245,57 @@ class _AttractionState extends State<AttractionFetch> {
               ],
             ),
           ),
-      Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Container(
-          decoration: BoxDecoration(
-            color: const Color.fromARGB(255, 0, 149, 255),
-            borderRadius: BorderRadius.circular(12),
-          ),
-          width: double.infinity,
-          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: DropdownButtonHideUnderline(
-        child: DropdownButton<String>(
-          value: _sortOption,
-          items: const [
-            DropdownMenuItem(
-              value: 'Highest Rated',
-              child: Text(
-                'Highest Rated',
-                style: TextStyle(color: Colors.white),
-
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: Container(
+              decoration: BoxDecoration(
+                color: const Color.fromARGB(255, 0, 149, 255),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: DropdownButtonHideUnderline(
+                child: DropdownButton<String>(
+                  value: _sortOption,
+                  items: const [
+                    DropdownMenuItem(
+                      value: 'Highest Rated',
+                      child: Text(
+                        'Highest Rated',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                    DropdownMenuItem(
+                      value: 'Lowest Rated',
+                      child: Text(
+                        'Lowest Rated',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                  ],
+                  onChanged: (value) {
+                    setState(() {
+                      _sortOption = value!;
+                    });
+                  },
+                  dropdownColor: const Color.fromARGB(
+                      255, 0, 149, 255), // Dropdown menu background color
+                  icon: const Icon(
+                    Icons.arrow_drop_down,
+                    color: Colors.white, // Icon color
+                  ),
+                  style: const TextStyle(
+                    color: Colors.white, // Dropdown text color
+                    fontSize: 16,
+                  ),
+                ),
               ),
             ),
-            DropdownMenuItem(
-              value: 'Lowest Rated',
-              child: Text(
-                'Lowest Rated',
-                style: TextStyle(color: Colors.white),
-              ),
-            ),
-          ],
-          onChanged: (value) {
-            setState(() {
-              _sortOption = value!;
-            });
-          },
-          dropdownColor: const Color.fromARGB(255, 0, 149, 255), // Dropdown menu background color
-          icon: const Icon(
-            Icons.arrow_drop_down,
-            color: Colors.white, // Icon color
           ),
-          style: const TextStyle(
-            color: Colors.white, // Dropdown text color
-            fontSize: 16,
+          const SizedBox(
+            height: 10,
           ),
-        ),
-            ),
-          ),
-      ),
-    _isLoading
+          _isLoading
               ? const Center(
                   child: CircularProgressIndicator(
                   color: Color.fromARGB(255, 0, 149, 255),
@@ -352,18 +359,30 @@ class _AttractionState extends State<AttractionFetch> {
                                         ),
                                         const SizedBox(height: 8),
                                         Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
                                           children: [
-                                            const Icon(Icons.star,
-                                                color: Colors.amber, size: 20),
-                                            const SizedBox(width: 4),
-                                            Text(
-                                              item['average_rating']!
-                                                  .toStringAsFixed(1),
-                                              style: const TextStyle(
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.bold,
-                                              ),
+                                            Row(
+                                              children: [
+                                                const Icon(Icons.star,
+                                                    color: Colors.amber,
+                                                    size: 20),
+                                                const SizedBox(width: 4),
+                                                Text(
+                                                  item['average_rating']!
+                                                      .toStringAsFixed(1),
+                                                  style: const TextStyle(
+                                                    fontSize: 16,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                ),
+                                              ],
                                             ),
+                                            const SizedBox(
+                                              width: 20,
+                                            ),
+                                            Text(
+                                                "${item['open_time']} to ${item['close_time']}"),
                                           ],
                                         ),
                                         const SizedBox(height: 12),
@@ -426,6 +445,46 @@ class _AttractionState extends State<AttractionFetch> {
                                             ),
                                           ],
                                         ),
+                                          const SizedBox(height: 12),
+                                            Row(
+                                              children: [
+                                                Expanded(
+                                                  child: GestureDetector(
+                                                    onTap: () async {
+                                                      final url = item['link'];
+                                                      if (await canLaunchUrl(
+                                                          Uri.parse(url))) {
+                                                        await launchUrl(
+                                                            Uri.parse(url),
+                                                            mode: LaunchMode
+                                                                .externalApplication);
+                                                      } else {
+                                                        ScaffoldMessenger.of(
+                                                                context)
+                                                            .showSnackBar(
+                                                          const SnackBar(
+                                                              content: Text(
+                                                                  'Could not launch URL')),
+                                                        );
+                                                      }
+                                                    },
+                                                    child: Container(
+                                                      decoration: BoxDecoration(
+                                                        borderRadius: BorderRadius.circular(8),
+                                                        color: const Color.fromARGB(
+                                                          255, 0, 149, 255),
+                                                      ),
+                                                      height: 45,
+                                                      child:const Center(
+                                                        child:  Text("View Website", style:  TextStyle(
+                                                          color: Colors.white,
+                                                        ),),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
                                       ],
                                     ),
                                   ),
