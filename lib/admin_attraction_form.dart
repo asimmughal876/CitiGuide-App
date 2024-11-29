@@ -20,6 +20,7 @@ class _AttractionFormState extends State<AttractionForm> {
   final TextEditingController Attractionlongitude = TextEditingController();
   final TextEditingController AttractionOpenTime = TextEditingController();
   final TextEditingController AttractionCloseTime = TextEditingController();
+  final TextEditingController Link = TextEditingController();
   final DatabaseReference attractionRef =
       FirebaseDatabase.instance.ref().child('attraction');
   final DatabaseReference citiesRef =
@@ -165,6 +166,7 @@ Future<void> _pickTime(TextEditingController controller) async {
 
   Future<void> addAttraction() async {
     if (AttractionController.text.isEmpty ||
+     Link.text.isEmpty ||
         _image == null ||
         _selectedCategoryKey == null ||
         _selectedCityKey == null) {
@@ -190,6 +192,7 @@ Future<void> _pickTime(TextEditingController controller) async {
         'title': AttractionController.text,
         'open_time': AttractionOpenTime.text,
         'close_time': AttractionCloseTime.text,
+        'website_Link': Link.text,
         'image': _imageUrl,
         'description': Attractiondesc.text,
         'latitude': Attractionlatitude.text,
@@ -329,6 +332,12 @@ Future<void> _pickTime(TextEditingController controller) async {
                 controller: Attractionlongitude,
                 decoration: _buildInputDecoration(
                     "Attraction Longitude", "Enter Attraction Longitude"),
+              ),
+              const SizedBox(height: 16),
+              TextField(
+                controller: Link,
+                decoration: _buildInputDecoration(
+                    "Attraction Website Link", "Enter Attraction Website Link"),
               ),
               const SizedBox(height: 16),
               DropdownButtonFormField<String>(
