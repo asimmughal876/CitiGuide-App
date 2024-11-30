@@ -30,10 +30,12 @@ class _ReviewAttractionState extends State<ReviewAttraction> {
               .where(
                   (entry) => entry.value['attraction'] == widget.attractionId)
               .map((entry) => {
+                    'key': entry.key,
                     'user': entry.value['user'],
                     'rating': entry.value['rating'],
                     'review': entry.value['review'],
                     'attraction': entry.value['attraction'],
+                    'likes': entry.value['likes'] ?? 0,
                   })
               .toList();
         });
@@ -54,6 +56,7 @@ class _ReviewAttractionState extends State<ReviewAttraction> {
           'rating': _rating,
           'review': reviewText,
           'attraction': widget.attractionId,
+          'likes': 0, // Initialize with 0 likes
         });
         _nameController.clear();
         _reviewController.clear();
@@ -69,6 +72,17 @@ class _ReviewAttractionState extends State<ReviewAttraction> {
       } catch (e) {
         print('Error submitting review: $e');
       }
+    }
+  }
+
+  Future<void> _likeReview(String reviewKey, int currentLikes) async {
+    try {
+      await _databaseReference
+          .child(reviewKey)
+          .update({'likes': currentLikes + 1});
+      fetchReviews(); // Refresh the reviews
+    } catch (e) {
+      print('Error liking review: $e');
     }
   }
 
@@ -135,8 +149,7 @@ class _ReviewAttractionState extends State<ReviewAttraction> {
                             ),
                             focusedBorder: OutlineInputBorder(
                               borderSide: BorderSide(
-                                  color: Color.fromARGB(255, 30, 30,
-                                      30)), 
+                                  color: Color.fromARGB(255, 30, 30, 30)),
                             ),
                           ),
                           validator: (value) =>
@@ -147,14 +160,13 @@ class _ReviewAttractionState extends State<ReviewAttraction> {
                           controller: _reviewController,
                           decoration: const InputDecoration(
                             labelText: 'Review',
-                           floatingLabelStyle: TextStyle(color: Colors.black),
+                            floatingLabelStyle: TextStyle(color: Colors.black),
                             border: OutlineInputBorder(
                               borderSide: BorderSide(color: Colors.grey),
                             ),
                             focusedBorder: OutlineInputBorder(
                               borderSide: BorderSide(
-                                  color: Color.fromARGB(255, 30, 30,
-                                      30)),
+                                  color: Color.fromARGB(255, 30, 30, 30)),
                             ),
                           ),
                           maxLines: 3,
@@ -177,9 +189,12 @@ class _ReviewAttractionState extends State<ReviewAttraction> {
                         ElevatedButton(
                           onPressed: _submitReview,
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color.fromARGB(255, 0, 149, 255)
+                              backgroundColor:
+                                  const Color.fromARGB(255, 0, 149, 255)),
+                          child: const Text(
+                            'Submit Review',
+                            style: TextStyle(color: Colors.white),
                           ),
-                          child: const Text('Submit Review',style: TextStyle(color: Colors.white),),
                         ),
                       ],
                     ),
@@ -217,6 +232,18 @@ class _ReviewAttractionState extends State<ReviewAttraction> {
                                 Text(
                                   review['review'],
                                   style: const TextStyle(fontSize: 14),
+                                ),
+                                const SizedBox(height: 8),
+                                Row(
+                                  children: [
+                                    IconButton(
+                                      onPressed: () => _likeReview(
+                                          review['key'], review['likes']),
+                                      icon: const Icon(Icons.thumb_up),
+                                      color: Colors.blue,
+                                    ),
+                                    Text('${review['likes']} likes'),
+                                  ],
                                 ),
                               ],
                             ),

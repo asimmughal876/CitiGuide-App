@@ -1,5 +1,4 @@
-import 'package:citi_guide_app/admin_city_fatch.dart';
-import 'package:citi_guide_app/home.dart';
+import 'package:citi_guide_app/login.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
@@ -26,7 +25,7 @@ class MyApp extends StatelessWidget {
           ),
           backgroundColor: const Color.fromARGB(255, 0, 149, 255), // AppBar background color
         ),
-        body: const AdminCityFatch(),
+        body: const  Login(),
       ),
     );
   }
