@@ -155,7 +155,7 @@ class _CitiesFormState extends State<CitiesForm> {
               TextField(
                 controller: cityController,
                 cursorColor:
-                    const Color.fromRGBO(244, 65, 83, 1), // Set cursor color
+                    const Color.fromRGBO(255, 0, 149, 255), // Set cursor color
                 decoration: InputDecoration(
                     labelText: "City Name",
                     hintText: "Enter city name",
@@ -182,7 +182,7 @@ class _CitiesFormState extends State<CitiesForm> {
                       icon: const Icon(Icons.photo_library),
                       label: const Text("Choose Image"),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color.fromRGBO(244, 65, 83, 1),
+                        backgroundColor: const Color.fromRGBO(255, 0, 149, 255),
                         foregroundColor: Colors.white,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
@@ -220,7 +220,7 @@ class _CitiesFormState extends State<CitiesForm> {
                 minLines: 5,
                 maxLines: 7,
                 cursorColor:
-                    const Color.fromRGBO(244, 65, 83, 1), // Set cursor color
+                    const Color.fromRGBO(255, 0, 149, 255), // Set cursor color
                 decoration: InputDecoration(
                     labelText: "City Description",
                     hintText: "Enter city Description",
@@ -242,7 +242,7 @@ class _CitiesFormState extends State<CitiesForm> {
               ElevatedButton(
                 onPressed: _isUploading ? null : addCity,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color.fromRGBO(244, 65, 83, 1),
+                  backgroundColor: const Color.fromRGBO(255, 0, 149, 255),
                   shape: const RoundedRectangleBorder(
                     borderRadius: BorderRadius.all(Radius.circular(30)),
                   ),
