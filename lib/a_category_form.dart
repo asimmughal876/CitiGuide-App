@@ -13,26 +13,21 @@ class _ACategoryFormState extends State<ACategoryForm> {
   final DatabaseReference _databaseReference =
       FirebaseDatabase.instance.ref().child('attraction_category');
   Future<void> add(BuildContext context) async {
-    if(c_name.text.isEmpty){
+    if (c_name.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-      const  SnackBar(content: Text("Please fill the Text Field"))
-      );
+          const SnackBar(content: Text("Please fill the Text Field")));
     }
-    try{
-      await _databaseReference.push().set({
-        'a_category' : c_name.text
-      });
+    try {
+      await _databaseReference.push().set({'a_category': c_name.text});
       c_name.clear();
-        ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Atrraction Category Added Successfully"))
-      );
-    }
-    catch(e){
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Error: $e"))
-      );
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text("Atrraction Category Added Successfully")));
+    } catch (e) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text("Error: $e")));
     }
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -48,8 +43,7 @@ class _ACategoryFormState extends State<ACategoryForm> {
               const SizedBox(height: 30),
               TextField(
                 controller: c_name,
-                cursorColor:
-                    const Color.fromARGB(255, 0, 149, 255), 
+                cursorColor: const Color.fromARGB(255, 0, 149, 255),
                 decoration: InputDecoration(
                     labelText: "Attration Category",
                     hintText: "Enter attration category",
@@ -73,7 +67,7 @@ class _ACategoryFormState extends State<ACategoryForm> {
                   add(context);
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const  Color.fromARGB(255, 0, 149, 255),
+                  backgroundColor: const Color.fromARGB(255, 0, 149, 255),
                   shape: const RoundedRectangleBorder(
                     borderRadius: BorderRadius.all(Radius.circular(30)),
                   ),

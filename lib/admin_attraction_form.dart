@@ -27,6 +27,8 @@ class _AttractionFormState extends State<AttractionForm> {
       FirebaseDatabase.instance.ref().child('cities');
   final DatabaseReference _categoryRef =
       FirebaseDatabase.instance.ref().child('attraction_category');
+  final DatabaseReference _notification =
+      FirebaseDatabase.instance.ref().child('notification');
 
   final ImagePicker _picker = ImagePicker();
   XFile? _image;
@@ -50,34 +52,34 @@ class _AttractionFormState extends State<AttractionForm> {
     _fetchCategories();
     _fetchCities();
   }
-Future<void> _pickTime(TextEditingController controller) async {
-  final TimeOfDay? pickedTime = await showTimePicker(
-    context: context,
-    initialTime: TimeOfDay.now(),
-    builder: (context, child) {
-      return Theme(
-        data: ThemeData.light().copyWith(
-          colorScheme:const ColorScheme.light(
-            primary:  Color.fromARGB(255, 0, 149, 255),
-            onPrimary: Colors.white,
-            onSurface: Colors.black, 
-          ),
-          buttonTheme: const ButtonThemeData(
-            textTheme: ButtonTextTheme.primary,
-          ),
-        ),
-        child: child!,
-      );
-    },
-  );
 
-  if (pickedTime != null) {
-    setState(() {
-      controller.text = pickedTime.format(context);
-    });
+  Future<void> _pickTime(TextEditingController controller) async {
+    final TimeOfDay? pickedTime = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.now(),
+      builder: (context, child) {
+        return Theme(
+          data: ThemeData.light().copyWith(
+            colorScheme: const ColorScheme.light(
+              primary: Color.fromARGB(255, 0, 149, 255),
+              onPrimary: Colors.white,
+              onSurface: Colors.black,
+            ),
+            buttonTheme: const ButtonThemeData(
+              textTheme: ButtonTextTheme.primary,
+            ),
+          ),
+          child: child!,
+        );
+      },
+    );
+
+    if (pickedTime != null) {
+      setState(() {
+        controller.text = pickedTime.format(context);
+      });
+    }
   }
-}
-
 
   Future<void> _fetchCategories() async {
     try {
@@ -166,7 +168,8 @@ Future<void> _pickTime(TextEditingController controller) async {
 
   Future<void> addAttraction() async {
     if (AttractionController.text.isEmpty ||
-     Link.text.isEmpty ||
+    Attractiondesc.text.isEmpty ||
+        Link.text.isEmpty ||
         _image == null ||
         _selectedCategoryKey == null ||
         _selectedCityKey == null) {
@@ -196,9 +199,14 @@ Future<void> _pickTime(TextEditingController controller) async {
         'image': _imageUrl,
         'description': Attractiondesc.text,
         'latitude': Attractionlatitude.text,
-        'longitude': Attractionlongitude.text,
+        'longitude': "-${Attractionlongitude.text}",
         'category_key': _selectedCategoryKey,
         'city_key': _selectedCityKey,
+      });
+      await _notification.push().set({
+        'title': AttractionController.text,
+        'description': Attractiondesc.text,
+        'category': 'Attraction',
       });
       AttractionController.clear();
       Attractiondesc.clear();
@@ -376,7 +384,7 @@ Future<void> _pickTime(TextEditingController controller) async {
               ElevatedButton(
                 onPressed: _isUploading ? null : addAttraction,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const  Color.fromARGB(255, 0, 149, 255),
+                  backgroundColor: const Color.fromARGB(255, 0, 149, 255),
                   shape: const RoundedRectangleBorder(
                     borderRadius: BorderRadius.all(Radius.circular(30)),
                   ),

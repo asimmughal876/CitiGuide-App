@@ -18,6 +18,9 @@ class _CitiesFormState extends State<CitiesForm> {
   final citydesc = TextEditingController();
   final DatabaseReference citiesRef =
       FirebaseDatabase.instance.ref().child('cities');
+  final DatabaseReference _notification =
+      FirebaseDatabase.instance.ref().child('notification');
+
   final ImagePicker _picker = ImagePicker();
   XFile? _image;
   String? _imageUrl;
@@ -104,6 +107,11 @@ class _CitiesFormState extends State<CitiesForm> {
         'city': cityController.text,
         'image': _imageUrl,
         'description': citydesc.text,
+      });
+      await _notification.push().set({
+        'title': cityController.text,
+        'description': citydesc.text,
+        'category': 'City',
       });
       cityController.clear();
       citydesc.clear();
