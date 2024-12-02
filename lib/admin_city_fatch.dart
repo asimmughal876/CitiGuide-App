@@ -1,6 +1,4 @@
-import 'dart:io';
 import 'package:cloudinary_public/cloudinary_public.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -104,7 +102,8 @@ class _AdminCityFatchState extends State<AdminCityFatch> {
     }
   }
 
-  Future<void> updateCity(String cityKey, String cityName, String cityDesc) async {
+  Future<void> updateCity(
+      String cityKey, String cityName, String cityDesc) async {
     if (cityName.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -180,7 +179,7 @@ class _AdminCityFatchState extends State<AdminCityFatch> {
                   children: [
                     TextField(
                       controller: cityController,
-                      cursorColor: const Color.fromRGBO(244, 65, 83, 1),
+                      cursorColor: const Color.fromARGB(255, 0, 149, 255),
                       decoration: InputDecoration(
                         labelText: "City Name",
                         hintText: "Enter city name",
@@ -204,7 +203,7 @@ class _AdminCityFatchState extends State<AdminCityFatch> {
                       controller: citydesc,
                       minLines: 5,
                       maxLines: 7,
-                      cursorColor: const Color.fromRGBO(244, 65, 83, 1),
+                      cursorColor: const Color.fromARGB(255, 0, 149, 255),
                       decoration: InputDecoration(
                         labelText: "City Description",
                         hintText: "Enter city Description",
@@ -233,7 +232,7 @@ class _AdminCityFatchState extends State<AdminCityFatch> {
                             label: const Text("Choose Image"),
                             style: ElevatedButton.styleFrom(
                               backgroundColor:
-                                  const Color.fromRGBO(244, 65, 83, 1),
+                                  const Color.fromARGB(255, 0, 149, 255),
                               foregroundColor: Colors.white,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(12),
@@ -258,20 +257,39 @@ class _AdminCityFatchState extends State<AdminCityFatch> {
                 ),
               ),
               actions: [
-                TextButton(
+                ElevatedButton(
                   onPressed: () {
                     Navigator.of(context).pop(); // Close the dialog
                   },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color.fromARGB(255, 0, 149, 255),
+                    shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(30)),
+                    ),
+                      foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 40, vertical: 10),
+                  ),
                   child: const Text('Cancel'),
                 ),
-                TextButton(
+                ElevatedButton(
                   onPressed: _isUploading
                       ? null
                       : () {
-                          updateCity(city['key'], cityController.text,
-                              citydesc.text);
-                          Navigator.of(context).pop(); // Close the dialog after update
+                          updateCity(
+                              city['key'], cityController.text, citydesc.text);
+                          Navigator.of(context)
+                              .pop(); // Close the dialog after update
                         },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color.fromARGB(255, 0, 149, 255),
+                    shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(30)),
+                    ),
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 40, vertical: 10),
+                  ),
                   child: _isUploading
                       ? const CircularProgressIndicator(color: Colors.white)
                       : const Text('Save'),
@@ -349,7 +367,7 @@ class _AdminCityFatchState extends State<AdminCityFatch> {
                           },
                         ),
                         IconButton(
-                          icon: const Icon(Icons.delete),
+                          icon: const Icon(Icons.delete,color: Colors.red,),
                           onPressed: () {
                             deleteCity(city['key']);
                           },

@@ -1,97 +1,121 @@
+import 'package:citi_guide_app/admincards.dart';
+import 'package:citi_guide_app/contact_fetch.dart';
 import 'package:flutter/material.dart';
+import 'package:citi_guide_app/a_category_form.dart';
+import 'package:citi_guide_app/admin_attraction_fatch.dart';
+import 'package:citi_guide_app/admin_attraction_form.dart';
+import 'package:citi_guide_app/admin_review_attrctn_fatch.dart';
+import 'package:citi_guide_app/cities_form.dart';
+import 'package:citi_guide_app/admin_city_fatch.dart';
 
 class AdminDashboard extends StatefulWidget {
   const AdminDashboard({super.key});
 
   @override
-  State<AdminDashboard> createState() => _AdminDashboardState();
+  _AdminDashboardState createState() => _AdminDashboardState();
 }
 
 class _AdminDashboardState extends State<AdminDashboard> {
+  int _selectedIndex = 0; 
+
+  final List<Widget> _pages = [
+    const AdminCard(),
+    const AttractionForm(),
+    const ACategoryForm(),
+    const AdminAttractionFetch(),
+    const AdminReviewAttrctnFatch(),
+    const CitiesForm(),
+    const AdminCityFatch(),
+    const ContactFetchPage(),
+  ];
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SingleChildScrollView(
-        child: Column(
-          children: [Container(
-              height: 300,
-              width: double.infinity,
-              decoration: const BoxDecoration(
-                image: DecorationImage(
-                  image: NetworkImage(
-                      "https://images.pexels.com/photos/18482986/pexels-photo-18482986/free-photo-of-people-at-a-concert-on-a-stadium.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"),
-                  opacity: 0.5,
-                  fit: BoxFit.cover,
-                ),
-                color: Colors.black,
+      appBar: AppBar(
+        title: const Text('Admin Panel'),
+        backgroundColor: Colors.blue,
+        foregroundColor: Colors.white,
+      ),
+      drawer: Drawer(
+        child: ListView(
+          padding: const EdgeInsets.all(0),
+          children: <Widget>[
+            const DrawerHeader(
+              decoration: BoxDecoration(
+                color: Colors.blue,
               ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text(
-                    "Explore Great Places",
-                    style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
-                  ),
-                  const SizedBox(height: 50),
-                  // Search Bar and Button with rounded corners and padding
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 20.0), // Outer padding
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: const Color(
-                            0xFFE0E0E0), // Background color for search bar
-                        borderRadius:
-                            BorderRadius.circular(30), // Rounded corners
-                      ),
-                      child: Row(
-                        children: [
-                          const Expanded(
-                            child: Padding(
-                              padding: EdgeInsets.only(
-                                  left: 16.0), // Padding inside the text field
-                              child: TextField(
-                                decoration: InputDecoration(
-                                  hintText: "Search City",
-                                  border: InputBorder.none,
-                                ),
-                              ),
-                            ),
-                          ),
-                          ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor:
-                                  const Color.fromRGBO(244, 65, 83, 1),
-                              shape: const RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.only(
-                                topRight: Radius.circular(30),
-                                bottomRight: Radius.circular(30),
-                              )),
-                              minimumSize: const Size(
-                                  100, 60), // Minimum size for button
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 16), // Padding for button text
-                            ),
-                            onPressed: () {},
-                            child: const Text(
-                              "Search",
-                              style: TextStyle(color: Colors.white),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
+              child: Text(
+                'Admin Panel',
+                style: TextStyle(color: Colors.white, fontSize: 24),
               ),
             ),
-            const SizedBox(height: 20),],
+                ListTile(
+              title: const Text('Admin Dashboard '),
+              onTap: () {
+                _onItemTapped(0);
+                Navigator.of(context).pop(); // Close the drawer
+              },
+            ),
+            ListTile(
+              title: const Text('Attraction Form'),
+              onTap: () {
+                _onItemTapped(1);
+                Navigator.of(context).pop(); // Close the drawer
+              },
+            ),
+            ListTile(
+              title: const Text('Attraction Category'),
+              onTap: () {
+                _onItemTapped(2);
+                Navigator.of(context).pop();
+              },
+            ),
+            ListTile(
+              title: const Text('Attraction Fetching'),
+              onTap: () {
+                _onItemTapped(3);
+                Navigator.of(context).pop();
+              },
+            ),
+            ListTile(
+              title: const Text('Attraction Reviews'),
+              onTap: () {
+                _onItemTapped(4);
+                Navigator.of(context).pop();
+              },
+            ),
+           ListTile(
+              title: const Text('City Form'),
+              onTap: () {
+                _onItemTapped(5);
+                Navigator.of(context).pop();
+              },
+            ),
+             ListTile(
+              title: const Text('City Fetch'),
+              onTap: () {
+                _onItemTapped(6);
+                Navigator.of(context).pop();
+              },
+            ),
+               ListTile(
+              title: const Text('Contact Message'),
+              onTap: () {
+                _onItemTapped(7);
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
         ),
       ),
+      body: _pages[_selectedIndex]
     );
   }
 }

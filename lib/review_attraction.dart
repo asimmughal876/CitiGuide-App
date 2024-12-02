@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ReviewAttraction extends StatefulWidget {
   final String? attractionId;
@@ -46,6 +47,14 @@ class _ReviewAttractionState extends State<ReviewAttraction> {
   }
 
   Future<void> _submitReview() async {
+    SharedPreferences storage = await SharedPreferences.getInstance();
+   String? user =  await storage.getString('user');
+    if(user == null){
+         ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Login For Submiting Reviews')),
+        );
+        return;
+    }
     if (_formKey.currentState!.validate()) {
       final name = _nameController.text;
       final reviewText = _reviewController.text;

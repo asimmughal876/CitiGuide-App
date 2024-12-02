@@ -1,3 +1,4 @@
+import 'package:citi_guide_app/bottom_nav.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -17,19 +18,21 @@ class _LoginState extends State<Login> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final GoogleSignIn _googleSignIn = GoogleSignIn(
-    clientId: '163196966457-rug057tbccdobo1uvj2oeeq0al3qlo53.apps.googleusercontent.com', 
+    clientId:
+        '163196966457-rug057tbccdobo1uvj2oeeq0al3qlo53.apps.googleusercontent.com',
   );
 
   Future<void> login(BuildContext context) async {
     try {
-      UserCredential user = await FirebaseAuth.instance.signInWithEmailAndPassword(
+      UserCredential user =
+          await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: emailController.text,
         password: passwordController.text,
       );
       SharedPreferences storage = await SharedPreferences.getInstance();
       await storage.setString("user", user.user!.uid);
 
-      if (user.user!.email == 'admin@example.com') { 
+      if (user.user!.email == 'admin@example.com') {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => const AdminDashboard()),
@@ -37,7 +40,11 @@ class _LoginState extends State<Login> {
       } else {
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => const ProfilePage()),
+        MaterialPageRoute(
+              builder: (context) => const BottomNav(
+                child: ProfilePage(),
+              ),
+            )
         );
       }
     } catch (e) {
@@ -48,48 +55,55 @@ class _LoginState extends State<Login> {
   }
 
   Future<void> _googleSignInMethod() async {
-  try {
-    final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
-    if (googleUser == null) {
-      return; // User canceled the sign-in process
-    }
-    final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
-    final OAuthCredential credential = GoogleAuthProvider.credential(
-      accessToken: googleAuth.accessToken,
-      idToken: googleAuth.idToken,
-    );
+    try {
+      final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
+      if (googleUser == null) {
+        return; // User canceled the sign-in process
+      }
+      final GoogleSignInAuthentication googleAuth =
+          await googleUser.authentication;
+      final OAuthCredential credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
 
-    UserCredential userCredential = await FirebaseAuth.instance.signInWithCredential(credential);
-    User? user = userCredential.user;
+      UserCredential userCredential =
+          await FirebaseAuth.instance.signInWithCredential(credential);
+      User? user = userCredential.user;
 
-    if (user != null) {
-      // Save profile image URL in Firebase or SharedPreferences
-      String profileImageUrl = googleUser.photoUrl ?? ''; // Google profile image URL
-      DatabaseReference userRef = FirebaseDatabase.instance.ref().child('Users').child(user.uid);
-      await userRef.update({
-        'imageUrl': profileImageUrl, // Store the Google profile image
-      });
+      if (user != null) {
+        // Save profile image URL in Firebase or SharedPreferences
+        String profileImageUrl =
+            googleUser.photoUrl ?? ''; // Google profile image URL
+        DatabaseReference userRef =
+            FirebaseDatabase.instance.ref().child('Users').child(user.uid);
+        await userRef.update({
+          'imageUrl': profileImageUrl, // Store the Google profile image
+        });
 
-      SharedPreferences storage = await SharedPreferences.getInstance();
-      await storage.setString("user", user.uid);
+        SharedPreferences storage = await SharedPreferences.getInstance();
+        await storage.setString("user", user.uid);
 
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => const ProfilePage()),
+        Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const BottomNav(
+                child: ProfilePage(),
+              ),
+            ));
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Google Sign-In Error: $e")),
       );
     }
-  } catch (e) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text("Google Sign-In Error: $e")),
-    );
   }
-}
-
 
   // Forgot Password functionality
   Future<void> _forgotPassword() async {
     try {
-      await FirebaseAuth.instance.sendPasswordResetEmail(email: emailController.text);
+      await FirebaseAuth.instance
+          .sendPasswordResetEmail(email: emailController.text);
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("Password reset email sent!")),
       );
@@ -103,19 +117,17 @@ class _LoginState extends State<Login> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Login', style: TextStyle(color: Colors.white)),
-        backgroundColor: Colors.blueAccent, 
-      ),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(22.0),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const SizedBox(height: 40), 
-
-              // Email TextField
+               const Text(
+                "Login",
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 40),
               TextField(
                 controller: emailController,
                 decoration: InputDecoration(
@@ -127,12 +139,13 @@ class _LoginState extends State<Login> {
                     borderRadius: BorderRadius.circular(12.0),
                     borderSide: BorderSide.none,
                   ),
-                  contentPadding: EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+                  contentPadding:
+                      EdgeInsets.symmetric(vertical: 15, horizontal: 20),
                 ),
               ),
-              
+
               const SizedBox(height: 20),
-              
+
               // Password TextField
               TextField(
                 controller: passwordController,
@@ -145,39 +158,42 @@ class _LoginState extends State<Login> {
                     borderRadius: BorderRadius.circular(12.0),
                     borderSide: BorderSide.none,
                   ),
-                  contentPadding: EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+                  contentPadding:
+                      EdgeInsets.symmetric(vertical: 15, horizontal: 20),
                 ),
                 obscureText: true,
               ),
-              
-              const SizedBox(height: 20), 
-              
+
+              const SizedBox(height: 20),
+
               // Login Button
               ElevatedButton(
                 onPressed: () => login(context),
                 child: const Text("Login"),
                 style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(vertical: 14.0, horizontal: 30.0),
+                  padding: const EdgeInsets.symmetric(
+                      vertical: 14.0, horizontal: 30.0),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12.0),
                   ),
-                  backgroundColor: Colors.blueAccent, 
-                  foregroundColor: Colors.white, 
+                  backgroundColor: Colors.blueAccent,
+                  foregroundColor: Colors.white,
                   shadowColor: Colors.blue.shade200,
                   elevation: 5.0,
                 ),
               ),
-              
-              const SizedBox(height: 20), 
+
+              const SizedBox(height: 20),
               // Google Sign-In Button
               ElevatedButton.icon(
                 onPressed: _googleSignInMethod,
                 icon: const Icon(Icons.login),
                 label: const Text('Continue with Google'),
                 style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(vertical: 14.0, horizontal: 30.0),
-                  backgroundColor: Colors.red, 
-                  foregroundColor: Colors.white, 
+                  padding: const EdgeInsets.symmetric(
+                      vertical: 14.0, horizontal: 30.0),
+                  backgroundColor: Colors.red,
+                  foregroundColor: Colors.white,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12.0),
                   ),
@@ -186,7 +202,7 @@ class _LoginState extends State<Login> {
                 ),
               ),
 
-              const SizedBox(height: 20), 
+              const SizedBox(height: 20),
               // Forgot Password Button
               TextButton(
                 onPressed: _forgotPassword,
