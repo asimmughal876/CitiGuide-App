@@ -199,7 +199,7 @@ class _AttractionFormState extends State<AttractionForm> {
         'image': _imageUrl,
         'description': Attractiondesc.text,
         'latitude': Attractionlatitude.text,
-        'longitude': "-${Attractionlongitude.text}",
+        'longitude': Attractionlongitude.text,
         'category_key': _selectedCategoryKey,
         'city_key': _selectedCityKey,
       });
