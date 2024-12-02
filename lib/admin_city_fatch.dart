@@ -42,7 +42,8 @@ class _AdminCityFatchState extends State<AdminCityFatch> {
       if (data != null) {
         final List<Map<String, dynamic>> cities = [];
         data.forEach((key, value) {
-          cities.add({'key': key, ...Map<String, dynamic>.from(value)});
+          final city = {'key': key, ...Map<String, dynamic>.from(value)};
+          cities.add(city);
         });
         setState(() {
           _cities = cities;
@@ -304,22 +305,59 @@ class _AdminCityFatchState extends State<AdminCityFatch> {
               ),
               const SizedBox(height: 16),
               ..._cities.map((city) {
-                return ListTile(
-                  title: Text(city['city']),
-                  subtitle: Text(city['description']),
-                  trailing: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      IconButton(
-                        icon: const Icon(Icons.edit),
-                        onPressed: () => _showEditDialog(city),
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Display city name at the top
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8.0),
+                      child: Text(
+                        city['city'],
+                        style: const TextStyle(
+                            fontSize: 22, fontWeight: FontWeight.bold),
                       ),
-                      IconButton(
-                        icon: const Icon(Icons.delete),
-                        onPressed: () => deleteCity(city['key']),
+                    ),
+                    // Display image covering full width
+                    if (city['image'] != '')
+                      Container(
+                        width: double.infinity,
+                        height: 200,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(15),
+                          image: DecorationImage(
+                            image: NetworkImage(city['image']),
+                            fit: BoxFit.cover,
+                          ),
+                        ),
                       ),
-                    ],
-                  ),
+                    // Display description below the image
+                    if (city['description'] != '')
+                      Padding(
+                        padding: const EdgeInsets.only(top: 8.0),
+                        child: Text(
+                          city['description'],
+                          style: const TextStyle(fontSize: 16),
+                        ),
+                      ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        IconButton(
+                          icon: const Icon(Icons.edit),
+                          onPressed: () {
+                            _showEditDialog(city);
+                          },
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.delete),
+                          onPressed: () {
+                            deleteCity(city['key']);
+                          },
+                        ),
+                      ],
+                    ),
+                    const Divider(),
+                  ],
                 );
               }).toList(),
             ],

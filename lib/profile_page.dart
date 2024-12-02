@@ -5,7 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:citi_guide_app/login.dart'; // Make sure to import the login screen
 
 class ProfilePage extends StatefulWidget {
-  const ProfilePage({Key? key}) : super(key: key);
+  const ProfilePage({super.key});
 
   @override
   State<ProfilePage> createState() => _ProfilePageState();
@@ -28,23 +28,24 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   Future<void> _loadProfileData() async {
-    User? user = FirebaseAuth.instance.currentUser;
+  User? user = FirebaseAuth.instance.currentUser;
 
-    if (user != null) {
-      DatabaseReference userRef = FirebaseDatabase.instance.ref().child('Users').child(user.uid);
-      DataSnapshot snapshot = await userRef.get();
+  if (user != null) {
+    DatabaseReference userRef = FirebaseDatabase.instance.ref().child('Users').child(user.uid);
+    DataSnapshot snapshot = await userRef.get();
 
-      if (snapshot.exists) {
-        Map userData = snapshot.value as Map;
-        setState(() {
-          nameController.text = userData['name'] ?? '';
-          emailController.text = userData['email'] ?? '';
-          phoneController.text = userData['phone'] ?? '';
-          profileImageURL = userData['imageUrl']; // Fetching the profile image URL
-        });
-      }
+    if (snapshot.exists) {
+      Map userData = snapshot.value as Map;
+      setState(() {
+        nameController.text = userData['name'] ?? '';
+        emailController.text = userData['email'] ?? '';
+        phoneController.text = userData['phone'] ?? '';
+        profileImageURL = userData['imageUrl']; // Fetching the profile image URL
+      });
     }
   }
+}
+
 
   Future<void> _updateProfileData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -98,15 +99,15 @@ class _ProfilePageState extends State<ProfilePage> {
           child: Column(
             children: [
               CircleAvatar(
-                radius: 40,
-                backgroundColor: Colors.blue,
-                backgroundImage: profileImageURL != null
-                    ? NetworkImage(profileImageURL!)
-                    : null,
-                child: profileImageURL == null
-                    ? const Icon(Icons.person, size: 40, color: Colors.white)
-                    : null,
-              ),
+radius: 40,
+  backgroundColor: Colors.blue,
+  backgroundImage: profileImageURL != null
+      ? NetworkImage(profileImageURL!)
+      : null,
+  child: profileImageURL == null
+      ? const Icon(Icons.person, size: 40, color: Colors.white)
+      : null,
+),
               const SizedBox(height: 10),
               Text(
                 nameController.text.isEmpty ? 'Username' : nameController.text,
@@ -123,11 +124,11 @@ class _ProfilePageState extends State<ProfilePage> {
                 onPressed: () async {
                   await _updateProfileData();
                 },
-                child: const Text("Save Changes"),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.blue,
                   foregroundColor: Colors.white,
                 ),
+                child: const Text("Save Changes"),
               ),
               const SizedBox(height: 20),
               // Logout Button
@@ -135,11 +136,11 @@ class _ProfilePageState extends State<ProfilePage> {
                 onPressed: () async {
                   await _logout();
                 },
-                child: const Text("Logout"),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.red, // Red for logout
                   foregroundColor: Colors.white,
                 ),
+                child: const Text("Logout"),
               ),
             ],
           ),
@@ -149,13 +150,28 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   Widget _buildTextField(TextEditingController controller, String hint, IconData icon) {
-    return TextFormField(
-      controller: controller,
-      decoration: InputDecoration(
-        prefixIcon: Icon(icon, color: Colors.blue),
-        hintText: hint,
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0)),
+  return TextFormField(
+    controller: controller,
+    decoration: InputDecoration(
+      prefixIcon: Icon(icon, color: Colors.blue),
+      hintText: hint,
+      fillColor: Colors.blue.shade50, 
+      filled: true, 
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12.0), 
+        borderSide: BorderSide.none, 
       ),
-    );
-  }
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12.0), 
+        borderSide: BorderSide.none, 
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12.0),
+        borderSide: BorderSide.none, 
+      ),
+    ),
+  );
+}
+
+
 }

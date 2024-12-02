@@ -115,6 +115,7 @@ Widget build(BuildContext context) {
           ],
         ),
         body: const BottomNav(),
+
       ),
     ),
   );
