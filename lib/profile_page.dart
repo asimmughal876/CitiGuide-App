@@ -1,8 +1,9 @@
+import 'package:citi_guide_app/bottom_nav.dart';
+import 'package:citi_guide_app/home.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:citi_guide_app/login.dart'; // Make sure to import the login screen
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -28,24 +29,25 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   Future<void> _loadProfileData() async {
-  User? user = FirebaseAuth.instance.currentUser;
+    User? user = FirebaseAuth.instance.currentUser;
 
-  if (user != null) {
-    DatabaseReference userRef = FirebaseDatabase.instance.ref().child('Users').child(user.uid);
-    DataSnapshot snapshot = await userRef.get();
+    if (user != null) {
+      DatabaseReference userRef =
+          FirebaseDatabase.instance.ref().child('Users').child(user.uid);
+      DataSnapshot snapshot = await userRef.get();
 
-    if (snapshot.exists) {
-      Map userData = snapshot.value as Map;
-      setState(() {
-        nameController.text = userData['name'] ?? '';
-        emailController.text = userData['email'] ?? '';
-        phoneController.text = userData['phone'] ?? '';
-        profileImageURL = userData['imageUrl']; // Fetching the profile image URL
-      });
+      if (snapshot.exists) {
+        Map userData = snapshot.value as Map;
+        setState(() {
+          nameController.text = userData['name'] ?? '';
+          emailController.text = userData['email'] ?? '';
+          phoneController.text = userData['phone'] ?? '';
+          profileImageURL =
+              userData['imageUrl']; // Fetching the profile image URL
+        });
+      }
     }
   }
-}
-
 
   Future<void> _updateProfileData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -56,7 +58,8 @@ class _ProfilePageState extends State<ProfilePage> {
       await prefs.setString("email", emailController.text);
       await prefs.setString("phone", phoneController.text);
 
-      DatabaseReference userRef = FirebaseDatabase.instance.ref().child('Users').child(user.uid);
+      DatabaseReference userRef =
+          FirebaseDatabase.instance.ref().child('Users').child(user.uid);
       await userRef.update({
         'name': nameController.text,
         'email': emailController.text,
@@ -79,39 +82,44 @@ class _ProfilePageState extends State<ProfilePage> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.clear(); // Clear any shared preferences data
     Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (context) => const Login()), // Navigate to login screen
-    );
+        context,
+        MaterialPageRoute(
+          builder: (context) => const BottomNav(
+            child: HomePage(),
+          ),
+        )
+        );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Your Profile', style: TextStyle(fontWeight: FontWeight.bold)),
-        backgroundColor: Colors.blue,
-        foregroundColor: Colors.white,
-        centerTitle: true,
-      ),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
             children: [
+                 const Text(
+                "Login",
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              ),
               CircleAvatar(
-radius: 40,
-  backgroundColor: Colors.blue,
-  backgroundImage: profileImageURL != null
-      ? NetworkImage(profileImageURL!)
-      : null,
-  child: profileImageURL == null
-      ? const Icon(Icons.person, size: 40, color: Colors.white)
-      : null,
-),
+                radius: 40,
+                backgroundColor: Colors.blue,
+                backgroundImage: profileImageURL != null
+                    ? NetworkImage(profileImageURL!)
+                    : null,
+                child: profileImageURL == null
+                    ? const Icon(Icons.person, size: 40, color: Colors.white)
+                    : null,
+              ),
               const SizedBox(height: 10),
               Text(
                 nameController.text.isEmpty ? 'Username' : nameController.text,
-                style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.black),
+                style: const TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black),
               ),
               const SizedBox(height: 20),
               _buildTextField(nameController, 'Name', Icons.person),
@@ -149,29 +157,28 @@ radius: 40,
     );
   }
 
-  Widget _buildTextField(TextEditingController controller, String hint, IconData icon) {
-  return TextFormField(
-    controller: controller,
-    decoration: InputDecoration(
-      prefixIcon: Icon(icon, color: Colors.blue),
-      hintText: hint,
-      fillColor: Colors.blue.shade50, 
-      filled: true, 
-      border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(12.0), 
-        borderSide: BorderSide.none, 
+  Widget _buildTextField(
+      TextEditingController controller, String hint, IconData icon) {
+    return TextFormField(
+      controller: controller,
+      decoration: InputDecoration(
+        prefixIcon: Icon(icon, color: Colors.blue),
+        hintText: hint,
+        fillColor: Colors.blue.shade50,
+        filled: true,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12.0),
+          borderSide: BorderSide.none,
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12.0),
+          borderSide: BorderSide.none,
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12.0),
+          borderSide: BorderSide.none,
+        ),
       ),
-      focusedBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(12.0), 
-        borderSide: BorderSide.none, 
-      ),
-      enabledBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(12.0),
-        borderSide: BorderSide.none, 
-      ),
-    ),
-  );
-}
-
-
+    );
+  }
 }

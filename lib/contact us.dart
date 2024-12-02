@@ -1,19 +1,14 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 
-class ContactUsApp extends StatelessWidget {
+class ContactUsApp extends StatefulWidget {
   const ContactUsApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      home: ContactUsPage(),
-      debugShowCheckedModeBanner: false, // Remove the debug banner
-    );
-  }
+  State<ContactUsApp> createState() => _ContactUsAppState();
 }
 
-class ContactUsPage extends StatelessWidget {
+class _ContactUsAppState extends State<ContactUsApp> {
   final DatabaseReference _textref =
       FirebaseDatabase.instance.ref().child('contact');
 
@@ -32,16 +27,15 @@ class ContactUsPage extends StatelessWidget {
       return;
     }
     await _textref.push().set({
-      'name': name,
-      'lastname': lname,
-      'email': email,
-      'mess': mess,
+      'name': name.text,
+      'lastname': lname.text,
+      'email': email.text,
+      'mess': mess.text,
     });
     name.clear();
     lname.clear();
     email.clear();
     mess.clear();
-    return;
   }
 
   @override

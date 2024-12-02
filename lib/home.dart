@@ -1,4 +1,5 @@
 import 'package:citi_guide_app/attraction_fetch.dart';
+import 'package:citi_guide_app/bottom_nav.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 
@@ -102,7 +103,7 @@ class _HomePageState extends State<HomePage> {
                               hintText: "Search City",
                               border: InputBorder.none,
                             ),
-                            cursorColor:const Color.fromARGB(255, 0, 149, 255),
+                            cursorColor: const Color.fromARGB(255, 0, 149, 255),
                             onChanged: (value) {
                               setState(() {
                                 _searchQuery = value.toLowerCase();
@@ -122,11 +123,13 @@ class _HomePageState extends State<HomePage> {
                     style:
                         TextStyle(fontWeight: FontWeight.bold, fontSize: 24))),
             isLoading
-                ? const Center(child: CircularProgressIndicator(color:  Color.fromARGB(255, 0, 149, 255),))
+                ? const Center(
+                    child: CircularProgressIndicator(
+                    color: Color.fromARGB(255, 0, 149, 255),
+                  ))
                 : cities.isEmpty
                     ? const Center(child: Text("No cities available"))
-                    :
-            const SizedBox(height: 10),
+                    : const SizedBox(height: 10),
             ListView.builder(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
@@ -179,15 +182,20 @@ class _HomePageState extends State<HomePage> {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) =>
-                                          AttractionFetch(cityId: city['id']),
+                                      builder: (context) =>  BottomNav(
+                                        child: AttractionFetch(cityId: city['id'],),
+                                      ),
                                     ),
                                   );
                                 },
                                 style: ElevatedButton.styleFrom(
-                                  backgroundColor: const Color.fromARGB(255, 0, 149, 255),
+                                  backgroundColor:
+                                      const Color.fromARGB(255, 0, 149, 255),
                                 ),
-                                child: const Text("Show Attractions", style: TextStyle(color: Colors.white),),
+                                child: const Text(
+                                  "Show Attractions",
+                                  style: TextStyle(color: Colors.white),
+                                ),
                               ),
                             ],
                           ),

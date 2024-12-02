@@ -145,18 +145,17 @@ class _SignUpState extends State<SignUp> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Sign Up'),
-        backgroundColor: Colors.blue,
-        foregroundColor: Colors.white,
-        centerTitle: true,
-      ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(35.0),
         child: Form(
           key: _formKey,
           child: Column(
             children: [
+                 const Text(
+                "Sign Up",
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 20,),
               if (_imageFile != null) ...[
                 kIsWeb
                     ? Image.network(_imageFile!.path, height: 150)
@@ -246,7 +245,7 @@ class _SignUpState extends State<SignUp> {
       prefixIcon: Icon(icon, color: Colors.blue),
       labelText: label,
       hintText: label,
-      labelStyle: TextStyle(color: Colors.blueAccent), 
+      labelStyle:const TextStyle(color: Colors.blueAccent), 
       fillColor: Colors.blue.shade50, 
       filled: true, 
       border: OutlineInputBorder(

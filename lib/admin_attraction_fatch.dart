@@ -170,13 +170,21 @@ class _AdminAttractionFetchState extends State<AdminAttractionFetch> {
             ),
           ),
           actions: [
-            TextButton(
+            ElevatedButton(
               onPressed: () {
                 Navigator.pop(context);
               },
+                   style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color.fromARGB(255, 0, 149, 255),
+                    shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(30)),
+                    ),
+                      foregroundColor: Colors.white,
+                   ),
               child: const Text('Cancel'),
+                   
             ),
-            TextButton(
+            ElevatedButton(
               onPressed: () async {
                 final updatedAttraction = {
                   'title': titleController.text,
@@ -208,6 +216,13 @@ class _AdminAttractionFetchState extends State<AdminAttractionFetch> {
 
                 Navigator.pop(context);
               },
+               style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color.fromARGB(255, 0, 149, 255),
+                    shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(30)),
+                    ),
+                      foregroundColor: Colors.white,
+                   ),
               child: const Text('Save'),
             ),
           ],
