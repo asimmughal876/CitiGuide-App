@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -19,15 +20,32 @@ class _ReviewAttractionState extends State<ReviewAttraction> {
   final TextEditingController _reviewController = TextEditingController();
   double _rating = 3.0;
   List<Map<String, dynamic>> reviews = [];
-  String? _userId; // Store the user's ID (you could use Firebase Auth for this)
+  String? _userId;
 
-Future<void> _checkuser() async{
-  SharedPreferences storage = await SharedPreferences.getInstance();
-  String? user = await storage.getString('user');
+  Future<void> _checkuser() async {
+    SharedPreferences storage = await SharedPreferences.getInstance();
+    String? user = await storage.getString('user');
 
-  user != null ? _userId = user : _userId = null;
-}
-  // Fetch reviews from Firebase
+    user != null ? _userId = user : _userId = null;
+  }
+
+  Future<void> _loadProfileData() async {
+    User? user = FirebaseAuth.instance.currentUser;
+
+    if (user != null) {
+      DatabaseReference userRef =
+          FirebaseDatabase.instance.ref().child('Users').child(user.uid);
+      DataSnapshot snapshot = await userRef.get();
+
+      if (snapshot.exists) {
+        Map userData = snapshot.value as Map;
+        setState(() {
+          _nameController.text = userData['name'] ?? '';
+        });
+      }
+    }
+  }
+
   Future<void> fetchReviews() async {
     try {
       final snapshot = await _databaseReference.get();
@@ -55,6 +73,12 @@ Future<void> _checkuser() async{
   }
 
   Future<void> _submitReview() async {
+    if (_userId == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Must login first to give a review')),
+      );
+      return;
+    }
     if (_formKey.currentState!.validate()) {
       final name = _nameController.text;
       final reviewText = _reviewController.text;
@@ -66,7 +90,8 @@ Future<void> _checkuser() async{
           'review': reviewText,
           'attraction': widget.attractionId,
           'likes': 0, // Initialize with 0 likes
-          'likedBy': [], // Initialize with empty list of users who liked the review
+          'likedBy':
+              [], // Initialize with empty list of users who liked the review
         });
         _nameController.clear();
         _reviewController.clear();
@@ -85,9 +110,10 @@ Future<void> _checkuser() async{
     }
   }
 
-  Future<void> _likeReview(String reviewKey, List<dynamic> likedBy, int currentLikes) async {
-    if(_userId == null){
-        ScaffoldMessenger.of(context).showSnackBar(
+  Future<void> _likeReview(
+      String reviewKey, List<dynamic> likedBy, int currentLikes) async {
+    if (_userId == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Must login first to like a review')),
       );
       return;
@@ -118,6 +144,7 @@ Future<void> _checkuser() async{
     super.initState();
     _checkuser();
     fetchReviews();
+    _loadProfileData();
   }
 
   Widget buildStarRating() {
@@ -168,36 +195,22 @@ Future<void> _checkuser() async{
                         ),
                         const SizedBox(height: 16),
                         TextFormField(
-                          controller: _nameController,
-                          decoration: const InputDecoration(
-                            labelText: 'Name',
-                            floatingLabelStyle: TextStyle(color: Colors.black),
-                            border: OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.grey),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                  color: Color.fromARGB(255, 30, 30, 30)),
-                            ),
-                          ),
-                          validator: (value) =>
-                              value!.isEmpty ? 'Please enter your name' : null,
-                        ),
-                        const SizedBox(height: 16),
-                        TextFormField(
                           controller: _reviewController,
-                          decoration: const InputDecoration(
-                            labelText: 'Review',
-                            floatingLabelStyle: TextStyle(color: Colors.black),
-                            border: OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.grey),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                  color: Color.fromARGB(255, 30, 30, 30)),
-                            ),
-                          ),
-                          maxLines: 3,
+                          cursorColor: const Color.fromARGB(255, 0, 149, 255),
+                          decoration: InputDecoration(
+                              hintText: "Review",
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(15),
+                              ),
+                              filled: true,
+                              fillColor: Colors.grey[200],
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: const BorderSide(
+                                  color: Colors.black,
+                                ),
+                                borderRadius: BorderRadius.circular(15),
+                              ),
+                              labelStyle: TextStyle(color: Colors.grey[900])),
                           validator: (value) => value!.isEmpty
                               ? 'Please enter your review'
                               : null,
@@ -217,7 +230,8 @@ Future<void> _checkuser() async{
                         ElevatedButton(
                           onPressed: _submitReview,
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color.fromARGB(255, 0, 149, 255),
+                            backgroundColor:
+                                const Color.fromARGB(255, 0, 149, 255),
                           ),
                           child: const Text(
                             'Submit Review',
@@ -266,7 +280,9 @@ Future<void> _checkuser() async{
                                   children: [
                                     IconButton(
                                       onPressed: () => _likeReview(
-                                          review['key'], review['likedBy'], review['likes']),
+                                          review['key'],
+                                          review['likedBy'],
+                                          review['likes']),
                                       icon: const Icon(Icons.thumb_up),
                                       color: Colors.blue,
                                     ),
