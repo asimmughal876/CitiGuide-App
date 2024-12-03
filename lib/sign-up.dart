@@ -146,9 +146,13 @@ class _SignUpState extends State<SignUp> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Sign Up'),
-        backgroundColor: Colors.blue,
-        foregroundColor: Colors.white,
+        title: const Text('Sign Up',
+        style: TextStyle(
+        fontSize: 30,
+        fontWeight: FontWeight.bold,
+      ),),
+        backgroundColor: const Color.fromARGB(0, 255, 255, 255),
+        foregroundColor: const Color.fromARGB(255, 0, 0, 0),
         centerTitle: true,
       ),
       body: SingleChildScrollView(
@@ -246,8 +250,8 @@ class _SignUpState extends State<SignUp> {
       prefixIcon: Icon(icon, color: Colors.blue),
       labelText: label,
       hintText: label,
-      labelStyle: TextStyle(color: Colors.blueAccent), 
-      fillColor: Colors.blue.shade50, 
+      labelStyle: const TextStyle(color: Colors.blueAccent), 
+      fillColor: const Color.fromRGBO(227, 242, 253, 1), 
       filled: true, 
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12.0), 

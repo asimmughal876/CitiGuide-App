@@ -1,6 +1,4 @@
-import 'dart:io';
 import 'package:cloudinary_public/cloudinary_public.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -22,12 +20,12 @@ class _AdminCityFatchState extends State<AdminCityFatch> {
   bool _isUploading = false;
 
   final cloudinary = CloudinaryPublic(
-    'djhjm9vtp', // Replace with your cloud name
-    'images', // Replace with your upload preset
+    'djhjm9vtp', 
+    'images', 
     cache: false,
   );
 
-  // Fetch the list of cities from Firebase
+  
   List<Map<String, dynamic>> _cities = [];
 
   @override
@@ -233,7 +231,7 @@ class _AdminCityFatchState extends State<AdminCityFatch> {
                             label: const Text("Choose Image"),
                             style: ElevatedButton.styleFrom(
                               backgroundColor:
-                                  const Color.fromRGBO(244, 65, 83, 1),
+                                  const Color.fromARGB(255, 68, 138, 255),
                               foregroundColor: Colors.white,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(12),
@@ -260,8 +258,13 @@ class _AdminCityFatchState extends State<AdminCityFatch> {
               actions: [
                 TextButton(
                   onPressed: () {
-                    Navigator.of(context).pop(); // Close the dialog
+                    Navigator.of(context).pop(); 
                   },
+                  style: TextButton.styleFrom(
+                        backgroundColor: Colors.blueAccent, 
+                        foregroundColor: Colors.white, 
+                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+  ),
                   child: const Text('Cancel'),
                 ),
                 TextButton(
@@ -270,8 +273,13 @@ class _AdminCityFatchState extends State<AdminCityFatch> {
                       : () {
                           updateCity(city['key'], cityController.text,
                               citydesc.text);
-                          Navigator.of(context).pop(); // Close the dialog after update
+                          Navigator.of(context).pop();
                         },
+                        style: TextButton.styleFrom(
+                            backgroundColor: Colors.blueAccent, // Background color
+                            foregroundColor: Colors.white, // Text color for contrast
+                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+  ),
                   child: _isUploading
                       ? const CircularProgressIndicator(color: Colors.white)
                       : const Text('Save'),
@@ -308,7 +316,7 @@ class _AdminCityFatchState extends State<AdminCityFatch> {
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Display city name at the top
+                    
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 8.0),
                       child: Text(
@@ -317,7 +325,7 @@ class _AdminCityFatchState extends State<AdminCityFatch> {
                             fontSize: 22, fontWeight: FontWeight.bold),
                       ),
                     ),
-                    // Display image covering full width
+                   
                     if (city['image'] != '')
                       Container(
                         width: double.infinity,
@@ -330,7 +338,7 @@ class _AdminCityFatchState extends State<AdminCityFatch> {
                           ),
                         ),
                       ),
-                    // Display description below the image
+                    
                     if (city['description'] != '')
                       Padding(
                         padding: const EdgeInsets.only(top: 8.0),
@@ -359,7 +367,7 @@ class _AdminCityFatchState extends State<AdminCityFatch> {
                     const Divider(),
                   ],
                 );
-              }).toList(),
+              }),
             ],
           ),
         ),

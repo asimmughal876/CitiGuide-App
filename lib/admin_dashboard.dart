@@ -37,23 +37,23 @@ class _AdminDashboardState extends State<AdminDashboard> {
                     ),
                   ),
                   const SizedBox(height: 50),
-                  // Search Bar and Button with rounded corners and padding
+                  
                   Padding(
                     padding: const EdgeInsets.symmetric(
-                        horizontal: 20.0), // Outer padding
+                        horizontal: 20.0), 
                     child: Container(
                       decoration: BoxDecoration(
                         color: const Color(
-                            0xFFE0E0E0), // Background color for search bar
+                            0xFFE0E0E0), 
                         borderRadius:
-                            BorderRadius.circular(30), // Rounded corners
+                            BorderRadius.circular(30), 
                       ),
                       child: Row(
                         children: [
                           const Expanded(
                             child: Padding(
                               padding: EdgeInsets.only(
-                                  left: 16.0), // Padding inside the text field
+                                  left: 16.0), 
                               child: TextField(
                                 decoration: InputDecoration(
                                   hintText: "Search City",
@@ -72,9 +72,9 @@ class _AdminDashboardState extends State<AdminDashboard> {
                                 bottomRight: Radius.circular(30),
                               )),
                               minimumSize: const Size(
-                                  100, 60), // Minimum size for button
+                                  100, 60), 
                               padding: const EdgeInsets.symmetric(
-                                  horizontal: 16), // Padding for button text
+                                  horizontal: 16), 
                             ),
                             onPressed: () {},
                             child: const Text(

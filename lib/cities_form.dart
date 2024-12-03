@@ -149,26 +149,24 @@ class _CitiesFormState extends State<CitiesForm> {
             children: [
               const Text(
                 "City Form",
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 30),
               TextField(
                 controller: cityController,
                 cursorColor:
-                    const Color.fromRGBO(255, 0, 149, 255), // Set cursor color
+                    const Color.fromRGBO(255, 0, 149, 255), 
                 decoration: InputDecoration(
                     labelText: "City Name",
                     hintText: "Enter city name",
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(15),
+                      borderSide: BorderSide.none,
                     ),
                     filled: true,
-                    fillColor: Colors.grey[200],
+                    fillColor: Colors.blue.shade50, 
                     focusedBorder: OutlineInputBorder(
-                      borderSide: const BorderSide(
-                        color: Colors.black, // Active border color
-                        width: 1.5,
-                      ),
+                      borderSide: BorderSide.none,
                       borderRadius: BorderRadius.circular(15),
                     ),
                     labelStyle: TextStyle(color: Colors.grey[900])),
@@ -182,7 +180,7 @@ class _CitiesFormState extends State<CitiesForm> {
                       icon: const Icon(Icons.photo_library),
                       label: const Text("Choose Image"),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color.fromRGBO(255, 0, 149, 255),
+                        backgroundColor: const Color.fromARGB(255, 33, 150, 243),
                         foregroundColor: Colors.white,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
@@ -226,14 +224,12 @@ class _CitiesFormState extends State<CitiesForm> {
                     hintText: "Enter city Description",
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(15),
+                      borderSide: BorderSide.none,
                     ),
                     filled: true,
-                    fillColor: Colors.grey[200],
+                    fillColor: Colors.blue.shade50, 
                     focusedBorder: OutlineInputBorder(
-                      borderSide: const BorderSide(
-                        color: Colors.black, // Active border color
-                        width: 1.5,
-                      ),
+                      borderSide: BorderSide.none,
                       borderRadius: BorderRadius.circular(15),
                     ),
                     labelStyle: TextStyle(color: Colors.grey[900])),
@@ -242,7 +238,7 @@ class _CitiesFormState extends State<CitiesForm> {
               ElevatedButton(
                 onPressed: _isUploading ? null : addCity,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color.fromRGBO(255, 0, 149, 255),
+                  backgroundColor: const Color.fromARGB(255, 33, 150, 243),
                   shape: const RoundedRectangleBorder(
                     borderRadius: BorderRadius.all(Radius.circular(30)),
                   ),

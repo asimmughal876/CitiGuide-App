@@ -46,9 +46,9 @@ class _AdminAttractionFetchState extends State<AdminAttractionFetch> {
           return {
             'key': entry.key,
             ...value,
-            'opening_hour': value['open_time'], // Map open_time to opening_hour
-            'closing_hour': value['close_time'], // Map close_time to closing_hour
-            'website_url': value['website_Link'], // Map website_Link to website_url
+            'opening_hour': value['open_time'], 
+            'closing_hour': value['close_time'], 
+            'website_url': value['website_Link'], 
           };
         }).toList();
         isLoading = false;
@@ -171,45 +171,56 @@ class _AdminAttractionFetchState extends State<AdminAttractionFetch> {
           ),
           actions: [
             TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: const Text('Cancel'),
-            ),
-            TextButton(
-              onPressed: () async {
-                final updatedAttraction = {
-                  'title': titleController.text,
-                  'description': descriptionController.text,
-                  'open_time': openingHourController.text,
-                  'close_time': closingHourController.text,
-                  'website_Link': websiteUrlController.text,
-                  'image': updatedImageUrl,
-                };
+  onPressed: () {
+    Navigator.pop(context);
+  },
+  style: TextButton.styleFrom(
+    backgroundColor: Colors.blueAccent, 
+    foregroundColor: Colors.white, 
+    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+  ),
+  child: const Text('Cancel'),
+),
+TextButton(
+  onPressed: () async {
+    final updatedAttraction = {
+      'title': titleController.text,
+      'description': descriptionController.text,
+      'open_time': openingHourController.text,
+      'close_time': closingHourController.text,
+      'website_Link': websiteUrlController.text,
+      'image': updatedImageUrl,
+    };
 
-                try {
-                  await attractionRef
-                      .child(attraction['key'])
-                      .update(updatedAttraction);
-                  setState(() {
-                    attraction['title'] = titleController.text;
-                    attraction['description'] = descriptionController.text;
-                    attraction['opening_hour'] = openingHourController.text;
-                    attraction['closing_hour'] = closingHourController.text;
-                    attraction['website_url'] = websiteUrlController.text;
-                    attraction['image'] = updatedImageUrl;
-                  });
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Attraction updated successfully')),
-                  );
-                } catch (e) {
-                  print('Error updating attraction: $e');
-                }
+    try {
+      await attractionRef
+          .child(attraction['key'])
+          .update(updatedAttraction);
+      setState(() {
+        attraction['title'] = titleController.text;
+        attraction['description'] = descriptionController.text;
+        attraction['opening_hour'] = openingHourController.text;
+        attraction['closing_hour'] = closingHourController.text;
+        attraction['website_url'] = websiteUrlController.text;
+        attraction['image'] = updatedImageUrl;
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Attraction updated successfully')),
+      );
+    } catch (e) {
+      print('Error updating attraction: $e');
+    }
 
-                Navigator.pop(context);
-              },
-              child: const Text('Save'),
-            ),
+    Navigator.pop(context);
+  },
+  style: TextButton.styleFrom(
+    backgroundColor: Colors.blueAccent, 
+    foregroundColor: Colors.white, 
+    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+  ),
+  child: const Text('Save'),
+),
+
           ],
         );
       },
@@ -220,10 +231,15 @@ class _AdminAttractionFetchState extends State<AdminAttractionFetch> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Manage Attractions'),
-        backgroundColor: Colors.white,
+        title: const Text('Manage Attractions',
+        style: TextStyle(
+        fontSize: 30,
+        fontWeight: FontWeight.bold,
+      ),),
+        backgroundColor: const Color.fromARGB(0, 255, 255, 255),
         foregroundColor: Colors.black,
         elevation: 0,
+        centerTitle: true,
       ),
       body: isLoading
           ? const Center(child: CircularProgressIndicator())

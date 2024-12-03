@@ -50,34 +50,34 @@ class _AttractionFormState extends State<AttractionForm> {
     _fetchCategories();
     _fetchCities();
   }
-Future<void> _pickTime(TextEditingController controller) async {
-  final TimeOfDay? pickedTime = await showTimePicker(
-    context: context,
-    initialTime: TimeOfDay.now(),
-    builder: (context, child) {
-      return Theme(
-        data: ThemeData.light().copyWith(
-          colorScheme:const ColorScheme.light(
-            primary:  Color.fromARGB(255, 0, 149, 255),
-            onPrimary: Colors.white,
-            onSurface: Colors.black, 
-          ),
-          buttonTheme: const ButtonThemeData(
-            textTheme: ButtonTextTheme.primary,
-          ),
-        ),
-        child: child!,
-      );
-    },
-  );
 
-  if (pickedTime != null) {
-    setState(() {
-      controller.text = pickedTime.format(context);
-    });
+  Future<void> _pickTime(TextEditingController controller) async {
+    final TimeOfDay? pickedTime = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.now(),
+      builder: (context, child) {
+        return Theme(
+          data: ThemeData.light().copyWith(
+            colorScheme: const ColorScheme.light(
+              primary: Color.fromARGB(255, 182, 238, 255),
+              onPrimary: Colors.white,
+              onSurface: Colors.black,
+            ),
+            buttonTheme: const ButtonThemeData(
+              textTheme: ButtonTextTheme.primary,
+            ),
+          ),
+          child: child!,
+        );
+      },
+    );
+
+    if (pickedTime != null) {
+      setState(() {
+        controller.text = pickedTime.format(context);
+      });
+    }
   }
-}
-
 
   Future<void> _fetchCategories() async {
     try {
@@ -166,7 +166,7 @@ Future<void> _pickTime(TextEditingController controller) async {
 
   Future<void> addAttraction() async {
     if (AttractionController.text.isEmpty ||
-     Link.text.isEmpty ||
+        Link.text.isEmpty ||
         _image == null ||
         _selectedCategoryKey == null ||
         _selectedCityKey == null) {
@@ -376,7 +376,7 @@ Future<void> _pickTime(TextEditingController controller) async {
               ElevatedButton(
                 onPressed: _isUploading ? null : addAttraction,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const  Color.fromARGB(255, 0, 149, 255),
+                  backgroundColor: const Color.fromARGB(255, 0, 149, 255),
                   shape: const RoundedRectangleBorder(
                     borderRadius: BorderRadius.all(Radius.circular(30)),
                   ),
@@ -403,14 +403,12 @@ Future<void> _pickTime(TextEditingController controller) async {
         hintText: hint,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(15),
+          borderSide: BorderSide.none,
         ),
         filled: true,
-        fillColor: Colors.grey[200],
+        fillColor: const Color.fromRGBO(227, 242, 253, 1),
         focusedBorder: OutlineInputBorder(
-          borderSide: const BorderSide(
-            color: Colors.black,
-            width: 1.5,
-          ),
+          borderSide: BorderSide.none,
           borderRadius: BorderRadius.circular(15),
         ),
         labelStyle: TextStyle(color: Colors.grey[900]));

@@ -54,15 +54,13 @@ class _ACategoryFormState extends State<ACategoryForm> {
                     labelText: "Attration Category",
                     hintText: "Enter attration category",
                     border: OutlineInputBorder(
+                      borderSide: BorderSide.none,
                       borderRadius: BorderRadius.circular(15),
                     ),
                     filled: true,
-                    fillColor: Colors.grey[200],
+                    fillColor: Colors.blue.shade50,
                     focusedBorder: OutlineInputBorder(
-                      borderSide: const BorderSide(
-                        color: Colors.black,
-                        width: 1.5,
-                      ),
+                      borderSide: BorderSide.none,
                       borderRadius: BorderRadius.circular(15),
                     ),
                     labelStyle: TextStyle(color: Colors.grey[900])),
@@ -73,7 +71,7 @@ class _ACategoryFormState extends State<ACategoryForm> {
                   add(context);
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const  Color.fromARGB(255, 0, 149, 255),
+                  backgroundColor: const Color.fromARGB(255, 0, 149, 255),
                   shape: const RoundedRectangleBorder(
                     borderRadius: BorderRadius.all(Radius.circular(30)),
                   ),
