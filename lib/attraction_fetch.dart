@@ -445,46 +445,63 @@ class _AttractionState extends State<AttractionFetch> {
                                             ),
                                           ],
                                         ),
-                                          const SizedBox(height: 12),
-                                            Row(
-                                              children: [
-                                                Expanded(
-                                                  child: GestureDetector(
-                                                    onTap: () async {
-                                                      final url = item['link'];
-                                                      if (await canLaunchUrl(
-                                                          Uri.parse(url))) {
-                                                        await launchUrl(
-                                                            Uri.parse(url),
-                                                            mode: LaunchMode
-                                                                .externalApplication);
-                                                      } else {
-                                                        ScaffoldMessenger.of(
-                                                                context)
-                                                            .showSnackBar(
-                                                          const SnackBar(
-                                                              content: Text(
-                                                                  'Could not launch URL')),
-                                                        );
-                                                      }
-                                                    },
-                                                    child: Container(
-                                                      decoration: BoxDecoration(
-                                                        borderRadius: BorderRadius.circular(8),
-                                                        color: const Color.fromARGB(
-                                                          255, 0, 149, 255),
-                                                      ),
-                                                      height: 45,
-                                                      child:const Center(
-                                                        child:  Text("View Website", style:  TextStyle(
-                                                          color: Colors.white,
-                                                        ),),
+                                        const SizedBox(height: 12),
+                                        Row(
+                                          children: [
+                                            Expanded(
+                                              child: GestureDetector(
+                                                onTap: () async {
+                                                  final url = item['link'];
+                                                  if (url != null &&
+                                                      Uri.tryParse(url)
+                                                              ?.hasAbsolutePath ==
+                                                          true) {
+                                                    final Uri uri =
+                                                        Uri.parse(url);
+                                                    if (await canLaunchUrl(
+                                                        uri)) {
+                                                    await launchUrl(uri, mode: LaunchMode.externalApplication);
+                                                    } else {
+                                                      ScaffoldMessenger.of(
+                                                              context)
+                                                          .showSnackBar(
+                                                        const SnackBar(
+                                                            content: Text(
+                                                                'Could not launch URL')),
+                                                      );
+                                                    }
+                                                  } else {
+                                                    ScaffoldMessenger.of(
+                                                            context)
+                                                        .showSnackBar(
+                                                      const SnackBar(
+                                                          content: Text(
+                                                              'Invalid URL')),
+                                                    );
+                                                  }
+                                                },
+                                                child: Container(
+                                                  decoration: BoxDecoration(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            8),
+                                                    color: const Color.fromARGB(
+                                                        255, 0, 149, 255),
+                                                  ),
+                                                  height: 45,
+                                                  child: const Center(
+                                                    child: Text(
+                                                      "View Website",
+                                                      style: TextStyle(
+                                                        color: Colors.white,
                                                       ),
                                                     ),
                                                   ),
                                                 ),
-                                              ],
+                                              ),
                                             ),
+                                          ],
+                                        ),
                                       ],
                                     ),
                                   ),

@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 
@@ -13,29 +14,50 @@ class _ContactUsAppState extends State<ContactUsApp> {
       FirebaseDatabase.instance.ref().child('contact');
 
   final name = TextEditingController();
-  final lname = TextEditingController();
   final email = TextEditingController();
   final mess = TextEditingController();
 
+  Future<void> _loadProfileData() async {
+    User? user = FirebaseAuth.instance.currentUser;
+
+    if (user != null) {
+      DatabaseReference userRef =
+          FirebaseDatabase.instance.ref().child('Users').child(user.uid);
+      DataSnapshot snapshot = await userRef.get();
+
+      if (snapshot.exists) {
+        Map userData = snapshot.value as Map;
+        setState(() {
+          name.text = userData['name'] ?? '';
+          email.text = userData['email'] ?? '';
+          userData['imageUrl'];
+        });
+      }
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _loadProfileData();
+  }
+
   Future<void> addmess(BuildContext context) async {
-    if (name.text.isEmpty ||
-        lname.text.isEmpty ||
-        email.text.isEmpty ||
-        mess.text.isEmpty) {
+    if (name.text.isEmpty || email.text.isEmpty || mess.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text("Please fill all the text Field")));
       return;
     }
     await _textref.push().set({
       'name': name.text,
-      'lastname': lname.text,
       'email': email.text,
       'mess': mess.text,
     });
     name.clear();
-    lname.clear();
     email.clear();
     mess.clear();
+    ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Please fill all the text Field")));
   }
 
   @override
@@ -111,51 +133,51 @@ class _ContactUsAppState extends State<ContactUsApp> {
                   const SizedBox(height: 25),
                   TextField(
                     controller: name,
-                    decoration: InputDecoration(
-                      labelText: 'First Name',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(13.0),
-                      ),
-                      contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 17, vertical: 14),
-                    ),
+                 decoration: InputDecoration(
+                  labelText: "First Name",
+                  labelStyle:const TextStyle(color: Colors.blueAccent),
+                  filled: true,
+                  fillColor: Colors.blue.shade50,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12.0),
+                    borderSide: BorderSide.none,
                   ),
-                  const SizedBox(height: 20),
-                  TextField(
-                    controller: lname,
-                    decoration: InputDecoration(
-                      labelText: 'Last Name',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(13.0),
-                      ),
-                      contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 17, vertical: 14),
-                    ),
+                  contentPadding:
+                      const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+                ),
                   ),
                   const SizedBox(height: 20),
                   TextField(
                     controller: email,
                     decoration: InputDecoration(
-                      labelText: 'Email',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(13.0),
-                      ),
-                      contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 17, vertical: 14),
-                    ),
+                  labelText: "Email",
+                  labelStyle: const TextStyle(color: Colors.blueAccent),
+                  filled: true,
+                  fillColor: Colors.blue.shade50,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12.0),
+                    borderSide: BorderSide.none,
+                  ),
+                  contentPadding:
+                      const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+                ),
                   ),
                   const SizedBox(height: 20),
                   TextField(
                     controller: mess,
                     maxLines: 4,
-                    decoration: InputDecoration(
-                      labelText: 'Message',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(13.0),
-                      ),
-                      contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 17, vertical: 19),
-                    ),
+                  decoration: InputDecoration(
+                  labelText: "Message",
+                  labelStyle: const TextStyle(color: Colors.blueAccent),
+                  filled: true,
+                  fillColor: Colors.blue.shade50,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12.0),
+                    borderSide: BorderSide.none,
+                  ),
+                  contentPadding:
+                      const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+                ),
                   ),
                   const SizedBox(height: 20),
                   Center(

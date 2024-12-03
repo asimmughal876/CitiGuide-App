@@ -122,12 +122,19 @@ class _AdminCityFatchState extends State<AdminCityFatch> {
         _imageUrl = await _uploadToCloudinary();
         if (_imageUrl == null) throw Exception('Failed to upload image');
       }
-
-      final cityData = {
-        'city': cityName,
-        'description': cityDesc,
-        'image': _imageUrl ?? '',
-      };
+      final cityData;
+      if (_imageUrl == null) {
+        cityData = {
+          'city': cityName,
+          'description': cityDesc,
+        };
+      } else {
+        cityData = {
+          'city': cityName,
+          'description': cityDesc,
+          'image': _imageUrl
+        };
+      }
 
       await citiesRef.child(cityKey).update(cityData);
 
@@ -161,6 +168,7 @@ class _AdminCityFatchState extends State<AdminCityFatch> {
         SnackBar(content: Text('Error deleting city: $e')),
       );
     }
+    _fetchCities();
   }
 
   void _showEditDialog(Map<String, dynamic> city) {
@@ -266,7 +274,7 @@ class _AdminCityFatchState extends State<AdminCityFatch> {
                     shape: const RoundedRectangleBorder(
                       borderRadius: BorderRadius.all(Radius.circular(30)),
                     ),
-                      foregroundColor: Colors.white,
+                    foregroundColor: Colors.white,
                     padding: const EdgeInsets.symmetric(
                         horizontal: 40, vertical: 10),
                   ),
@@ -336,7 +344,7 @@ class _AdminCityFatchState extends State<AdminCityFatch> {
                       ),
                     ),
                     // Display image covering full width
-                    if (city['image'] != '')
+                    if (city['image'] != null && city['image'].isNotEmpty)
                       Container(
                         width: double.infinity,
                         height: 200,
@@ -346,6 +354,15 @@ class _AdminCityFatchState extends State<AdminCityFatch> {
                             image: NetworkImage(city['image']),
                             fit: BoxFit.cover,
                           ),
+                        ),
+                      )
+                    else
+                      Container(
+                        width: double.infinity,
+                        height: 200,
+                        color: Colors.grey,
+                        child: const Center(
+                          child: Text('No Image'),
                         ),
                       ),
                     // Display description below the image
@@ -367,7 +384,10 @@ class _AdminCityFatchState extends State<AdminCityFatch> {
                           },
                         ),
                         IconButton(
-                          icon: const Icon(Icons.delete,color: Colors.red,),
+                          icon: const Icon(
+                            Icons.delete,
+                            color: Colors.red,
+                          ),
                           onPressed: () {
                             deleteCity(city['key']);
                           },

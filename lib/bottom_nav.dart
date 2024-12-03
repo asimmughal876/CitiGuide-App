@@ -116,6 +116,7 @@ class _BottomNavState extends State<BottomNav> {
         width: 40, color: Colors.white,
         fit: BoxFit.contain,
       ),
+        automaticallyImplyLeading: false,
         backgroundColor: const Color.fromARGB(255, 0, 149, 255),
         actions: [
           Stack(
