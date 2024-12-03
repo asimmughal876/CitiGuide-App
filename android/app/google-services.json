@@ -8,9 +8,10 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:163196966457:android:f1d1f9292b95c064a4dfe8",
+        "mobilesdk_app_id": "1:163196966457:android:f1a20bad9a2d71b9a4dfe8",
         "android_client_info": {
-          "package_name": "com.citi_guide.app"
+          "package_name": "com.example.citi_guide_app"
+          
         }
       },
       "oauth_client": [

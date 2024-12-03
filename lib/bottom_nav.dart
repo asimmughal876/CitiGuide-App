@@ -1,3 +1,4 @@
+import 'package:citi_guide_app/faqs.dart';
 import 'package:citi_guide_app/profile_page.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
@@ -73,18 +74,19 @@ class _BottomNavState extends State<BottomNav> {
     // Check user login status
     checkUserLoggedIn().then((_) {
       setState(() {
-        // Set the screens based on the login status
         _screens = isUserLoggedIn
             ? [
                 const HomePage(),
-                const Aboutus(),
+                const AboutUs(),
                 const ContactUsApp(),
+                const Faqs(),
                 const ProfilePage(),
               ]
             : [
                 const HomePage(),
-                const Aboutus(),
+                const AboutUs(),
                 const ContactUsApp(),
+                const Faqs(),
                 const SignUp(),
                 const Login(),
               ];
@@ -108,10 +110,12 @@ class _BottomNavState extends State<BottomNav> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          "Citi Guide",
-          style: TextStyle(color: Colors.white),
-        ),
+        title:Image.network(
+        'https://res.cloudinary.com/dgexlc4gh/image/upload/v1733056082/logo_aijv6o.png',
+        height: 40,
+        width: 40, color: Colors.white,
+        fit: BoxFit.contain,
+      ),
         backgroundColor: const Color.fromARGB(255, 0, 149, 255),
         actions: [
           Stack(
@@ -162,7 +166,6 @@ class _BottomNavState extends State<BottomNav> {
         currentIndex: _currentScreen,
         onTap: (index) {
           if (widget.child != null) {
-            // Remove `child` to switch back to dynamic navigation.
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(
@@ -170,7 +173,6 @@ class _BottomNavState extends State<BottomNav> {
               ),
             );
           } else {
-            // Update the current screen index for dynamic navigation.
             _navigateTo(index);
           }
         },
@@ -186,6 +188,10 @@ class _BottomNavState extends State<BottomNav> {
           const BottomNavigationBarItem(
             icon: Icon(Icons.phone),
             label: "Contact",
+          ),
+         const BottomNavigationBarItem(
+            icon: Icon(Icons.question_answer),
+            label: "Faqs",
           ),
           if (isUserLoggedIn) // Show Profile Page if logged in
             const BottomNavigationBarItem(

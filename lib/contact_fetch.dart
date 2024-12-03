@@ -39,6 +39,7 @@ class _ContactFetchPageState extends State<ContactFetchPage> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text("Message deleted!")),
     );
+    _fetchMessages();
   }
 
   @override

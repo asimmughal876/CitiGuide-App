@@ -14,7 +14,7 @@ class _AdminReviewAttrctnFatchState extends State<AdminReviewAttrctnFatch> {
       FirebaseDatabase.instance.ref().child('review_attraction');
   List<Map<String, dynamic>> reviews = [];
 
-  // Fetch all reviews from Firebase
+  
   Future<void> fetchReviews() async {
     try {
       final snapshot = await _databaseReference.get();
@@ -27,7 +27,7 @@ class _AdminReviewAttrctnFatchState extends State<AdminReviewAttrctnFatch> {
                     'rating': entry.value['rating'],
                     'review': entry.value['review'],
                     'attraction': entry.value['attraction'],
-                    'id': entry.key, // Review ID
+                    'id': entry.key, 
                   })
               .toList();
         });
@@ -37,14 +37,14 @@ class _AdminReviewAttrctnFatchState extends State<AdminReviewAttrctnFatch> {
     }
   }
 
-  // Delete review from Firebase
+
   Future<void> deleteReview(String reviewId) async {
     try {
       await _databaseReference.child(reviewId).remove();
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Review deleted successfully!')),
       );
-      fetchReviews(); // Refresh reviews after deletion
+      fetchReviews(); 
     } catch (e) {
       print('Error deleting review: $e');
     }

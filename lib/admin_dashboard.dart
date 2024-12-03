@@ -1,5 +1,6 @@
 import 'package:citi_guide_app/admincards.dart';
 import 'package:citi_guide_app/contact_fetch.dart';
+import 'package:citi_guide_app/profile_page.dart';
 import 'package:flutter/material.dart';
 import 'package:citi_guide_app/a_category_form.dart';
 import 'package:citi_guide_app/admin_attraction_fatch.dart';
@@ -27,6 +28,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
     const CitiesForm(),
     const AdminCityFatch(),
     const ContactFetchPage(),
+    const ProfilePage(),
   ];
 
   void _onItemTapped(int index) {
@@ -109,6 +111,13 @@ class _AdminDashboardState extends State<AdminDashboard> {
               title: const Text('Contact Message'),
               onTap: () {
                 _onItemTapped(7);
+                Navigator.of(context).pop();
+              },
+            ),
+           ListTile(
+              title: const Text('Profile'),
+              onTap: () {
+                _onItemTapped(8);
                 Navigator.of(context).pop();
               },
             ),

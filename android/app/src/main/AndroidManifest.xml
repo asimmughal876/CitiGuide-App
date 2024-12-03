@@ -24,7 +24,9 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyDLCIieOvIMZA6o7VzrwK_SOy4dqLVpOto" />
-
+  <meta-data
+        android:name="com.google.android.gms.auth.api.fallbackUrl"
+        android:value="https://citi-guide-31d31.firebaseapp.com/__/auth/handler" />
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
