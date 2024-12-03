@@ -31,6 +31,7 @@ class _CitiesFormState extends State<CitiesForm> {
     'images', // Replace with your upload preset
     cache: false,
   );
+
   // Pick an image and convert it to Base64
   Future<void> _pickImage(ImageSource source) async {
     try {
@@ -101,18 +102,30 @@ class _CitiesFormState extends State<CitiesForm> {
     try {
       _imageUrl = await _uploadToCloudinary();
 
-      if (_imageUrl == null) throw Exception('Failed to upload image');
+      // Ensure that the image is successfully uploaded before proceeding
+      if (_imageUrl == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Failed to upload image'),
+          ),
+        );
+        return;
+      }
 
+      // Push data to Firebase Database after successful image upload
       await citiesRef.push().set({
         'city': cityController.text,
-        'image': _imageUrl,
+        'image': _imageUrl, // Ensure _imageUrl is properly set here
         'description': citydesc.text,
       });
+
       await _notification.push().set({
         'title': cityController.text,
         'description': citydesc.text,
         'category': 'City',
       });
+
+      // Clear fields after submission
       cityController.clear();
       citydesc.clear();
 
@@ -190,7 +203,7 @@ class _CitiesFormState extends State<CitiesForm> {
                       icon: const Icon(Icons.photo_library),
                       label: const Text("Choose Image"),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor:const Color.fromARGB(255, 0, 149, 255),
+                        backgroundColor: const Color.fromARGB(255, 0, 149, 255),
                         foregroundColor: Colors.white,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),

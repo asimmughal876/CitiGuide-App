@@ -10,7 +10,7 @@ class ContactFetchPage extends StatefulWidget {
 
 class _ContactFetchPageState extends State<ContactFetchPage> {
   final DatabaseReference _databaseRef =
-      FirebaseDatabase.instance.ref().child('contact'); // Reference to 'contact'
+      FirebaseDatabase.instance.ref().child('contact');
 
   List<Map<dynamic, dynamic>> _messages = [];
 
@@ -37,27 +37,26 @@ class _ContactFetchPageState extends State<ContactFetchPage> {
   void _deleteMessage(String key) async {
     await _databaseRef.child(key).remove();
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text("Message deleted!")),
+    const  SnackBar(content: Text("Message deleted!")),
     );
-    _fetchMessages();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Messages'),
+        title: const Text('Messages'),
       ),
       body: _messages.isEmpty
-          ? Center(child: Text('No messages found!'))
+          ? const Center(child: const Text('No messages found!'))
           : ListView.builder(
               itemCount: _messages.length,
               itemBuilder: (context, index) {
                 final message = _messages[index];
                 return Card(
-                  margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                  margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
                   child: ListTile(
-                    title: Text("${message['name']} ${message['lastname']}"),
+                    title: Text("${message['name']}"),
                     subtitle: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -66,7 +65,7 @@ class _ContactFetchPageState extends State<ContactFetchPage> {
                       ],
                     ),
                     trailing: IconButton(
-                      icon: Icon(Icons.delete, color: Colors.red),
+                      icon: const Icon(Icons.delete, color: Colors.red),
                       onPressed: () => _deleteMessage(message['key']),
                     ),
                   ),

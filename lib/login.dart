@@ -131,7 +131,7 @@ class _LoginState extends State<Login> {
                 controller: emailController,
                 decoration: InputDecoration(
                   labelText: "Email",
-                  labelStyle: TextStyle(color: Colors.blueAccent),
+                  labelStyle: const TextStyle(color: Colors.blueAccent),
                   filled: true,
                   fillColor: Colors.blue.shade50,
                   border: OutlineInputBorder(
@@ -139,7 +139,7 @@ class _LoginState extends State<Login> {
                     borderSide: BorderSide.none,
                   ),
                   contentPadding:
-                      EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+                      const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
                 ),
               ),
 
@@ -150,7 +150,7 @@ class _LoginState extends State<Login> {
                 controller: passwordController,
                 decoration: InputDecoration(
                   labelText: "Password",
-                  labelStyle: TextStyle(color: Colors.blueAccent),
+                  labelStyle: const TextStyle(color: Colors.blueAccent),
                   filled: true,
                   fillColor: Colors.blue.shade50,
                   border: OutlineInputBorder(
@@ -158,7 +158,7 @@ class _LoginState extends State<Login> {
                     borderSide: BorderSide.none,
                   ),
                   contentPadding:
-                      EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+                      const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
                 ),
                 obscureText: true,
               ),
