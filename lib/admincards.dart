@@ -10,44 +10,64 @@ class AdminCard extends StatefulWidget {
 
 class _AdminCardState extends State<AdminCard> {
   int usercount = 0;
-  final DatabaseReference userRef = FirebaseDatabase.instance.ref().child('Users');
-    int attractioncount = 0;
-  final DatabaseReference attractionRef = FirebaseDatabase.instance.ref().child('attraction');
-   int cititescount = 0;
-  final DatabaseReference cititesRef = FirebaseDatabase.instance.ref().child('cities');
+  final DatabaseReference userRef =
+      FirebaseDatabase.instance.ref().child('Users');
+  int attractioncount = 0;
+  final DatabaseReference attractionRef =
+      FirebaseDatabase.instance.ref().child('attraction');
+  int citiescount = 0;
+  final DatabaseReference citiesRef =
+      FirebaseDatabase.instance.ref().child('cities');
 
   @override
   void initState() {
     super.initState();
-    _checkusers();
-    _checkattraction();
-    _checkcities();
+    _fetchCounts();
   }
 
-  Future<void> _checkusers() async {
+  Future<void> _fetchCounts() async {
+    await Future.wait([
+      _checkUsers(),
+      _checkAttraction(),
+      _checkCities(),
+    ]);
+  }
+
+  Future<void> _checkUsers() async {
     final snapshot = await userRef.get();
-    if (snapshot.exists) {
-      final Map<dynamic, dynamic> userMap = snapshot.value as Map<dynamic, dynamic>;
+    if (snapshot.exists && snapshot.value is Map) {
       setState(() {
-        usercount = userMap.length;
+        usercount = (snapshot.value as Map).length;
+      });
+    } else {
+      setState(() {
+        usercount = 0; // Handle case where no users exist
       });
     }
   }
-    Future<void> _checkattraction() async {
+
+  Future<void> _checkAttraction() async {
     final snapshot = await attractionRef.get();
-    if (snapshot.exists) {
-      final Map<dynamic, dynamic> attractionMap = snapshot.value as Map<dynamic, dynamic>;
+    if (snapshot.exists && snapshot.value is Map) {
       setState(() {
-        attractioncount = attractionMap.length;
+        attractioncount = (snapshot.value as Map).length;
+      });
+    } else {
+      setState(() {
+        attractioncount = 0; // Handle case where no attractions exist
       });
     }
   }
-    Future<void> _checkcities() async {
-    final snapshot = await cititesRef.get();
-    if (snapshot.exists) {
-      final Map<dynamic, dynamic> cititesMap = snapshot.value as Map<dynamic, dynamic>;
+
+  Future<void> _checkCities() async {
+    final snapshot = await citiesRef.get();
+    if (snapshot.exists && snapshot.value is Map) {
       setState(() {
-        cititescount = cititesMap.length;
+        citiescount = (snapshot.value as Map).length;
+      });
+    } else {
+      setState(() {
+        citiescount = 0; // Handle case where no cities exist
       });
     }
   }
@@ -57,21 +77,21 @@ class _AdminCardState extends State<AdminCard> {
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: GridView.count(
-          crossAxisCount: 2, 
+        child: GridView.extent(
+          maxCrossAxisExtent: 300,
           crossAxisSpacing: 10.0,
           mainAxisSpacing: 10.0,
           children: <Widget>[
             _buildDashboardCard('User', Icons.person, usercount),
             _buildDashboardCard('Attraction', Icons.place, attractioncount),
-            _buildDashboardCard('Cities', Icons.location_city, cititescount),
+            _buildDashboardCard('Cities', Icons.location_city, citiescount),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildDashboardCard(String title, IconData icon, int index) {
+  Widget _buildDashboardCard(String title, IconData icon, int count) {
     return Card(
       elevation: 5,
       shape: RoundedRectangleBorder(
@@ -88,7 +108,7 @@ class _AdminCardState extends State<AdminCard> {
                 size: 50,
                 color: Colors.blue,
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 5),
               Text(
                 title,
                 style: const TextStyle(
@@ -96,13 +116,18 @@ class _AdminCardState extends State<AdminCard> {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              const SizedBox(height: 10),
               Center(
-                child: Text(
-                  index.toString(),
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 8.0), // Add padding
+                  child: Text(
+                    count.toString(),
+                    style:const TextStyle(
+                      fontSize: 18, // Adjusted for better legibility
+                      fontWeight: FontWeight.bold,
+                      color: Colors.blueGrey, // Improved contrast
+                    ),
+                    textAlign: TextAlign.center,
                   ),
                 ),
               ),

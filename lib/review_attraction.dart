@@ -19,7 +19,14 @@ class _ReviewAttractionState extends State<ReviewAttraction> {
   final TextEditingController _reviewController = TextEditingController();
   double _rating = 3.0;
   List<Map<String, dynamic>> reviews = [];
+  String? _userId; // Store the user's ID (you could use Firebase Auth for this)
 
+Future<void> _checkuser() async{
+  SharedPreferences storage = await SharedPreferences.getInstance();
+  String? user = await storage.getString('user');
+
+  user != null ? _userId = user : _userId = null;
+}
   // Fetch reviews from Firebase
   Future<void> fetchReviews() async {
     try {
@@ -37,6 +44,7 @@ class _ReviewAttractionState extends State<ReviewAttraction> {
                     'review': entry.value['review'],
                     'attraction': entry.value['attraction'],
                     'likes': entry.value['likes'] ?? 0,
+                    'likedBy': entry.value['likedBy'] ?? [],
                   })
               .toList();
         });
@@ -47,14 +55,6 @@ class _ReviewAttractionState extends State<ReviewAttraction> {
   }
 
   Future<void> _submitReview() async {
-    SharedPreferences storage = await SharedPreferences.getInstance();
-   String? user =  await storage.getString('user');
-    if(user == null){
-         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Login For Submiting Reviews')),
-        );
-        return;
-    }
     if (_formKey.currentState!.validate()) {
       final name = _nameController.text;
       final reviewText = _reviewController.text;
@@ -66,6 +66,7 @@ class _ReviewAttractionState extends State<ReviewAttraction> {
           'review': reviewText,
           'attraction': widget.attractionId,
           'likes': 0, // Initialize with 0 likes
+          'likedBy': [], // Initialize with empty list of users who liked the review
         });
         _nameController.clear();
         _reviewController.clear();
@@ -84,11 +85,28 @@ class _ReviewAttractionState extends State<ReviewAttraction> {
     }
   }
 
-  Future<void> _likeReview(String reviewKey, int currentLikes) async {
+  Future<void> _likeReview(String reviewKey, List<dynamic> likedBy, int currentLikes) async {
+    if(_userId == null){
+        ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Must login first to like a review')),
+      );
+      return;
+    }
+    if (likedBy.contains(_userId)) {
+      // User has already liked the review, do nothing
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('You have already liked this review')),
+      );
+      return;
+    }
+
     try {
+      likedBy.add(_userId); // Add the user to the likedBy list
+
       await _databaseReference
           .child(reviewKey)
-          .update({'likes': currentLikes + 1});
+          .update({'likes': currentLikes + 1, 'likedBy': likedBy});
+
       fetchReviews(); // Refresh the reviews
     } catch (e) {
       print('Error liking review: $e');
@@ -98,6 +116,7 @@ class _ReviewAttractionState extends State<ReviewAttraction> {
   @override
   void initState() {
     super.initState();
+    _checkuser();
     fetchReviews();
   }
 
@@ -198,8 +217,8 @@ class _ReviewAttractionState extends State<ReviewAttraction> {
                         ElevatedButton(
                           onPressed: _submitReview,
                           style: ElevatedButton.styleFrom(
-                              backgroundColor:
-                                  const Color.fromARGB(255, 0, 149, 255)),
+                            backgroundColor: const Color.fromARGB(255, 0, 149, 255),
+                          ),
                           child: const Text(
                             'Submit Review',
                             style: TextStyle(color: Colors.white),
@@ -247,7 +266,7 @@ class _ReviewAttractionState extends State<ReviewAttraction> {
                                   children: [
                                     IconButton(
                                       onPressed: () => _likeReview(
-                                          review['key'], review['likes']),
+                                          review['key'], review['likedBy'], review['likes']),
                                       icon: const Icon(Icons.thumb_up),
                                       color: Colors.blue,
                                     ),

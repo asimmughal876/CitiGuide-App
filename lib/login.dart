@@ -32,7 +32,7 @@ class _LoginState extends State<Login> {
       SharedPreferences storage = await SharedPreferences.getInstance();
       await storage.setString("user", user.user!.uid);
 
-      if (user.user!.email == 'admin@example.com') {
+      if (user.user!.email == 'admin@gmail.com') {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => const AdminDashboard()),
@@ -58,7 +58,7 @@ class _LoginState extends State<Login> {
     try {
       final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
       if (googleUser == null) {
-        return; // User canceled the sign-in process
+        return; 
       }
       final GoogleSignInAuthentication googleAuth =
           await googleUser.authentication;
@@ -72,13 +72,12 @@ class _LoginState extends State<Login> {
       User? user = userCredential.user;
 
       if (user != null) {
-        // Save profile image URL in Firebase or SharedPreferences
         String profileImageUrl =
-            googleUser.photoUrl ?? ''; // Google profile image URL
+            googleUser.photoUrl ?? ''; 
         DatabaseReference userRef =
             FirebaseDatabase.instance.ref().child('Users').child(user.uid);
         await userRef.update({
-          'imageUrl': profileImageUrl, // Store the Google profile image
+          'imageUrl': profileImageUrl,
         });
 
         SharedPreferences storage = await SharedPreferences.getInstance();
